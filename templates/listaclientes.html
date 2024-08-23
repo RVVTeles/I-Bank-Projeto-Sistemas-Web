@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "header.html" %}
+<div class="w3-main" style="margin:50px">
+    <h1>Clientes</h1>
+    <table border="1">
+        <tr>
+            <th>CPF</th>
+            <th>Nome</th>
+        </tr>
+        
+        {% for cliente in clientes %}
+        <tr>
+            <td>{{ cliente.cpf }}</td>
+            <td>{{ cliente.nome }}</td>
+        </tr>
+        {% endfor %}
+
+        
+    </table>
+
+</div>
+{% include "footer.html" %}
+</body>
+</html>

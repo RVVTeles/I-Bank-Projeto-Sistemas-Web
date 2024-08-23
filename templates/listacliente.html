@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "header.html" %}
+
+<div class="w3-main" style="margin:50px">
+    <h1>Cliente</h1>
+    
+    {% if cliente %}
+    <p><strong>CPF:</strong> {{ cliente.cpf }}</p>
+    <p><strong>Nome:</strong> {{ cliente.nome }}</p>
+    {% else %}
+        <p>Cliente não encontrado.</p>
+    {% endif %}        
+    
+
+</div>
+{% include "footer.html" %}
+</body>
+</html>
