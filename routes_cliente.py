@@ -46,6 +46,10 @@ def listar_cliente():
     cpf = request.args.get("cpf")
     stmt = select(Cliente).where(Cliente.cpf == cpf)
     cliente = db.session.execute(stmt).scalars().first()
+    if cliente is None:
+        flash("CPF não cadastrado")
+        return redirect(url_for("clientes.clientes"))
+
     return render_template("listacliente.html", cliente=cliente)
 
 @clientes_bp.route("/atualizacliente", methods=["POST"])
@@ -75,7 +79,7 @@ def deletar_cliente():
     cpf = request.form.get("cpf")
 
     if not cpf:
-        flash("CPF e Nome precisam ser inseridos.")
+        flash("CPF precisa ser inserido.")
         return redirect(url_for("clientes.clientes"))
     
     stmt = select(Cliente).where(Cliente.cpf == cpf)
@@ -85,8 +89,8 @@ def deletar_cliente():
         flash("CPF não cadastrado")
         return redirect(url_for("clientes.clientes"))
 
-    att_stmt = delete(Cliente).where(Cliente.cpf == cpf)
-    db.session.execute(att_stmt)
+    del_stmt = delete(Cliente).where(Cliente.cpf == cpf)
+    db.session.execute(del_stmt)
     db.session.commit()
 
     flash("Cliente deletado com sucesso")

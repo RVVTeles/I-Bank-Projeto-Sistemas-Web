@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "header.html" %}
+
+<div class="w3-main" style="margin:50px">
+    <h1>Contas do cliente com CPF:{{contas[0].cliente_cpf}}</h1>
+    <table border="1">
+        <tr>
+            <th>Valor</th>
+            <th>Juros</th>
+            <th>Data de emissão</th>
+            <th>Data de Vencimento</th>
+            <th>Data de pagamento:</th>
+        </tr>
+        
+        {% for conta in contas %}
+        <tr>
+            <td>{{ conta.valor }}</td>
+            <td>{{ conta.juros }}</td>
+            <td>{{ conta.data_emissao }}</td>
+            <td>{{ conta.data_vencimento }}</td>
+            <td>{{ conta.data_pagamento }}</td>
+        </tr>
+        {% endfor %}
+
+        
+    </table>
+
+</div>
+{% include "footer.html" %}
+</body>
+</html>

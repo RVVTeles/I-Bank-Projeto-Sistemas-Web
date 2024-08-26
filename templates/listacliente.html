@@ -4,15 +4,9 @@
 {% include "header.html" %}
 
 <div class="w3-main" style="margin:50px">
-    <h1>Cliente</h1>
-    
-    {% if cliente %}
+    <h1>Cliente</h1>    
     <p><strong>CPF:</strong> {{ cliente.cpf }}</p>
     <p><strong>Nome:</strong> {{ cliente.nome }}</p>
-    {% else %}
-        <p>Cliente não encontrado.</p>
-    {% endif %}        
-    
 
 </div>
 {% include "footer.html" %}

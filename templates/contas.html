@@ -21,46 +21,52 @@
       </form>
     </div>
   </div>
-  <!-- <h1>Listar Clientes</h1>
+  <h1>Listar Todas as Contas</h1>
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
-      <form action="/listaclientes" method="get">
-        <input type="submit" value="Listar Clientes">
+      <form action="/listacontas" method="get">
+        <input type="submit" value="Listar Contas">
       </form>
     </div>
-  </div> -->
-  <!-- <h1>Listar Cliente</h1>
+  </div>
+  <h1>Listar Contas do Cliente</h1>
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
-      <form action="/listacliente" method="get">
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf"><br><br>
-        <input type="submit" value="Listar Cliente">
+      <form action="/listaconta" method="get">
+        <label for="cliente_cpf">CPF do Cliente:</label>
+        <input type="text" id="cliente_cpf" name="cliente_cpf"><br><br>
+        <input type="submit" value="Listar Conta">
       </form>
     </div>
-  </div> -->
-  <!-- <h1>Atualizar Cliente</h1>
+  </div>
+  <h1>Atualizar Conta</h1>
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
-      <form action="/atualizacliente" method="post">
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf"><br><br>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome"><br><br>
-        <input type="submit" value="Atualizar Cliente">
+      <form action="/atualizaconta" method="post">
+        <label for="id">Id da conta:</label>
+        <input type="text" id="id" name="id"><br><br>
+        <label for="cliente_cpf">CPF do cliente:</label>
+        <input type="text" id="cliente_cpf" name="cliente_cpf"><br><br>
+        <label for="valor">Valor:</label>
+        <input type="text" id="valor" name="valor"><br><br>
+        <label for="juros">Juros:</label>
+        <input type="text" id="juros" name="juros"><br><br>
+        <label for="data_vencimento">Data de Vencimento:</label>
+        <input type="text" id="data_vencimento" name="data_vencimento"><br><br>
+        <input type="submit" value="Atualizar Conta">
       </form>
     </div>
-  </div> -->
-  <!-- <h1>Deletar Cliente</h1>
+  </div>
+  <h1>Deletar Conta</h1>
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
-      <form action="/deletacliente" method="post">
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf"><br><br>
-        <input type="submit" value="Deletar Cliente">
+      <form action="/deletaconta" method="post">
+        <label for="id">ID da conta:</label>
+        <input type="text" id="id" name="id"><br><br>
+        <input type="submit" value="Deletar Conta">
       </form>
     </div>
-  </div> -->
+  </div>
 </div>
 {% include "footer.html" %}
 </body>
