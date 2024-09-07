@@ -2,25 +2,51 @@
 <html lang="en">
 
 {% include "header.html" %}
-<div class="w3-main" style="margin:50px">
-    <h1>Clientes</h1>
-    <table border="1">
-        <tr>
-            <th>CPF</th>
-            <th>Nome</th>
-        </tr>
-        
-        {% for cliente in clientes %}
-        <tr>            
-            <td>{{ cliente.cpf }}</td>
-            <td>{{ cliente.nome }}</td>
-        </tr>
-        {% endfor %}
 
-        
-    </table>
+<div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
+
+    <div style="width: 80%;">
+
+        <h1 class="w3-container">Clientes</h1>
+
+        <!-- Search Bar -->
+        <div class="w3-container">
+            <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome" onkeyup="filterList()" style="font-size: 14px; padding: 8px;">
+        </div>
+
+        <!-- Clients List -->
+        <div class="w3-container w3-margin-top" id="optionsContainer">
+            {% for cliente in clientes %}
+            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
+                <h3 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h3>
+                <p style="font-size: 14px; margin: 5px 0;">CPF: {{ cliente.cpf }}</p>
+                <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
 
 </div>
+
 {% include "footer.html" %}
-</body>
+
+<script>
+    function filterList() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const optionItems = document.getElementsByClassName('option-item');
+        
+        for (let i = 0; i < optionItems.length; i++) {
+            const item = optionItems[i];
+            const text = item.getElementsByTagName('h3')[0].innerText.toLowerCase();
+            
+            if (text.includes(input)) {
+                item.style.display = "block"; // Show the item
+            } else {
+                item.style.display = "none"; // Hide the item
+            }
+        }
+    }
+</script>
+
 </html>

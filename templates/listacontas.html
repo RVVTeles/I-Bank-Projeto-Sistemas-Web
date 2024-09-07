@@ -2,33 +2,98 @@
 <html lang="en">
 
 {% include "header.html" %}
-<div class="w3-main" style="margin:50px">
-    <h1>Contas</h1>
-    <table border="1">
-        <tr>
-            <th>CPF Cliente</th>
-            <th>Valor</th>
-            <th>Juros</th>
-            <th>Data de emissão</th>
-            <th>Data de Vencimento</th>
-            <th>Data de pagamento:</th>
-        </tr>
-        
-        {% for conta in contas %}
-        <tr>
-            <td>{{ conta.cliente_cpf }}</td>
-            <td>{{ conta.valor }}</td>
-            <td>{{ conta.juros }}</td>
-            <td>{{ conta.data_emissao }}</td>
-            <td>{{ conta.data_vencimento }}</td>
-            <td>{{ conta.data_pagamento }}</td>
-        </tr>
-        {% endfor %}
+<div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
 
-        
-    </table>
+    <div style="width: 80%;">
+
+        <h1 class="w3-container">Contas</h1>
+
+        <!-- Search Bar -->
+        <div class="w3-container">
+            <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Contas Por ID" onkeyup="filterList()" style="font-size: 14px; padding: 8px;">
+        </div>
+
+        <!-- Contas List -->
+        <div class="w3-container w3-margin-top" id="optionsContainer">
+            {% if not contas %}
+            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px; text-align: center;">
+                <p style="font-size: 24px; margin-bottom: 10px;">Não há contas disponíveis nesta pesquisa</p>
+            </div>
+            {% endif %}
+            {% for conta in contas %}
+            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;" 
+            data-vencimento="{{ conta.data_vencimento }}" 
+            data-pagamento="{{ conta.data_pagamento if conta.data_pagamento else '' }}">
+                <h3 style="font-size: 18px; margin-bottom: 10px;">ID da Conta: {{ conta.id }}</h3>
+                <p style="font-size: 18px; margin-bottom: 10px;">CPF do Cliente: {{ conta.cliente_cpf }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Valor: R${{ conta.valor }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Juros Diário: R${{ conta.juros }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Data de Emissão: {{ conta.data_emissao }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Data de Vencimento: {{ conta.data_vencimento }}</p>
+                
+                <p id="status_{{ conta.id }}" style="font-size: 14px; margin: 5px 0;">Status da Conta: </p>
+                {% if conta.data_pagamento %}
+                <p style="font-size: 14px; margin: 5px 0;">Data de Pagamento: {{ conta.data_pagamento }}</p>
+                    {% if conta.data_pagamento > conta.data_vencimento %}
+                    <p style="font-size: 14px; margin: 5px 0;">Valor Pago: R${{ conta.valor + ((conta.data_pagamento - conta.data_vencimento).days * conta.juros) }}</p>
+                    {% endif %}
+                {% endif%}
+                <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
 
 </div>
+
 {% include "footer.html" %}
-</body>
+
+    <script>
+        function filterList() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const optionItems = document.getElementsByClassName('option-item');
+            
+            for (let i = 0; i < optionItems.length; i++) {
+                const item = optionItems[i];
+                const text = item.getElementsByTagName('h3')[0].innerText.toLowerCase();
+                
+                if (text.includes(input)) {
+                    item.style.display = "block"; // Show the item
+                } else {
+                    item.style.display = "none"; // Hide the item
+                }
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get today's date
+            const today = new Date();
+    
+            // Loop through each "conta" item
+            const contaItems = document.querySelectorAll('.option-item');
+            contaItems.forEach(function(item) {
+                const vencimentoStr = item.getAttribute('data-vencimento');
+                const pagamentoStr = item.getAttribute('data-pagamento');
+                
+                // Convert vencimento and pagamento dates from strings to JavaScript Date objects
+                const vencimento = new Date(vencimentoStr);
+                const pagamento = pagamentoStr ? new Date(pagamentoStr) : null;
+    
+                // Get the status element to update
+                const statusElement = item.querySelector('p[id^="status_"]');
+    
+                // Determine the status
+                if (pagamento) {
+                    statusElement.textContent = "Status da Conta: paga";
+                } else if (today > vencimento) {
+                    statusElement.textContent = "Status da Conta: em atraso";
+                } else {
+                    statusElement.textContent = "Status da Conta: a pagar";
+                }
+            });
+        });
+    </script>
+    
 </html>

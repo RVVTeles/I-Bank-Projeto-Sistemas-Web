@@ -39,6 +39,18 @@
       </form>
     </div>
   </div>
+  <h1>Pagar Conta</h1>
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container">
+      <form action="/pagaconta" method="post">
+        <label for="id">Id da conta:</label>
+        <input type="text" id="id" name="id"><br><br>
+        <label for="data_pagamento">Data de Pagamento:</label>
+        <input type="date" id="data_pagamento" name="data_pagamento"><br><br>
+        <input type="submit" value="Pagar Conta">
+      </form>
+    </div>
+  </div>
   <h1>Atualizar Conta</h1>
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
@@ -51,8 +63,8 @@
         <input type="text" id="valor" name="valor"><br><br>
         <label for="juros">Juros:</label>
         <input type="text" id="juros" name="juros"><br><br>
-        <label for="data_vencimento">Data de Vencimento:</label>
-        <input type="text" id="data_vencimento" name="data_vencimento"><br><br>
+        <label for="data_vencimento">Data de vencimento:</label>
+        <input type="date" id="data_vencimento" name="data_vencimento"><br><br>
         <input type="submit" value="Atualizar Conta">
       </form>
     </div>
@@ -67,7 +79,46 @@
       </form>
     </div>
   </div>
+  <h1>Contas a pagar</h1>
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container">
+      <form action="/contasapagar" method="post">
+        <label for="data_inicial">Data inicial:</label>
+        <input type="date" id="data_inicial" name="data_inicial"><br><br>
+        <label for="data_final">Data final:</label>
+        <input type="date" id="data_final" name="data_final"><br><br>
+        <input type="submit" value="Pesquisar Contas A Pagar">
+      </form>
+    </div>
+  </div>
+  <h1>Contas pagas</h1>
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container">
+      <form action="/contaspagas" method="post">
+        <label for="data_inicial">Data inicial:</label>
+        <input type="date" id="data_inicial" name="data_inicial"><br><br>
+        <label for="data_final">Data final:</label>
+        <input type="date" id="data_final" name="data_final"><br><br>
+        <input type="submit" value="Pesquisar Contas Pagas">
+      </form>
+    </div>
+  </div>
+  <h1>Listar Contas do Cliente Em Status Escolhido</h1>
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container">
+      <form action="/listacontastatus" method="get">
+        <label for="cliente_cpf">CPF do Cliente:</label>
+        <input type="text" id="cliente_cpf" name="cliente_cpf"><br><br>
+        <label for="status">Escolha o status da conta:</label>
+        <select id="status" name="status">
+            <option value="a pagar">A pagar</option>
+            <option value="paga">Paga</option>
+            <option value="em atraso">Em atraso</option>
+        </select>
+        <input type="submit" value="Listar Contas">
+      </form>
+    </div>
+  </div>
 </div>
 {% include "footer.html" %}
-</body>
 </html>

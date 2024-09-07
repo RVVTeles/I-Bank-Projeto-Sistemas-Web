@@ -2,32 +2,55 @@
 <html lang="en">
 
 {% include "header.html" %}
+<div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
 
-<div class="w3-main" style="margin:50px">
-    <h1>Contas do cliente com CPF:{{contas[0].cliente_cpf}}</h1>
-    <table border="1">
-        <tr>
-            <th>Valor</th>
-            <th>Juros</th>
-            <th>Data de emissão</th>
-            <th>Data de Vencimento</th>
-            <th>Data de pagamento:</th>
-        </tr>
-        
-        {% for conta in contas %}
-        <tr>
-            <td>{{ conta.valor }}</td>
-            <td>{{ conta.juros }}</td>
-            <td>{{ conta.data_emissao }}</td>
-            <td>{{ conta.data_vencimento }}</td>
-            <td>{{ conta.data_pagamento }}</td>
-        </tr>
-        {% endfor %}
+    <div style="width: 80%;">
 
-        
-    </table>
+        <h1 class="w3-container">Contas do cliente com CPF:{{contas[0].cliente_cpf}}</h1>
+
+        <!-- Search Bar -->
+        <div class="w3-container">
+            <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Conta Por ID" onkeyup="filterList()" style="font-size: 14px; padding: 8px;">
+        </div>
+
+        <!-- Conta List -->
+        <div class="w3-container w3-margin-top" id="optionsContainer">
+            {% for conta in contas %}
+            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
+                <h3 style="font-size: 18px; margin-bottom: 10px;">ID da Conta: {{ conta.id }}</h3>
+                <p style="font-size: 14px; margin: 5px 0;">Valor: {{ conta.valor }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Juros: {{ conta.juros }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Data de Emissão: {{ conta.data_emissao }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Data de Vencimento: {{ conta.data_vencimento }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Data de Pagamento: {{ conta.data_pagamento }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Status da Conta: {{ "Conta Paga" if conta.data_pagamento else "Conta não paga" }}</p>
+                <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
 
 </div>
+
 {% include "footer.html" %}
-</body>
+
+<script>
+    function filterList() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const optionItems = document.getElementsByClassName('option-item');
+        
+        for (let i = 0; i < optionItems.length; i++) {
+            const item = optionItems[i];
+            const text = item.getElementsByTagName('h3')[0].innerText.toLowerCase();
+            
+            if (text.includes(input)) {
+                item.style.display = "block"; // Show the item
+            } else {
+                item.style.display = "none"; // Hide the item
+            }
+        }
+    }
+</script>
+
 </html>

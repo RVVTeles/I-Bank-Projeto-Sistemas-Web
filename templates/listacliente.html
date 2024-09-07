@@ -3,12 +3,22 @@
 
 {% include "header.html" %}
 
-<div class="w3-main" style="margin:50px">
-    <h1>Cliente</h1>    
-    <p><strong>CPF:</strong> {{ cliente.cpf }}</p>
-    <p><strong>Nome:</strong> {{ cliente.nome }}</p>
+<div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
+
+    <div style="width: 80%;">
+
+        <h1 class="w3-container">Cliente</h1>
+        <!-- Clients List -->
+        <div class="w3-container w3-margin-top" id="optionsContainer">
+            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
+                <h3 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h3>
+                <p style="font-size: 14px; margin: 5px 0;">CPF: {{ cliente.cpf }}</p>
+                <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
+            </div>
+        </div>
+
+    </div>
 
 </div>
 {% include "footer.html" %}
-</body>
 </html>
