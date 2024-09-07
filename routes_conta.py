@@ -216,3 +216,9 @@ def listar_conta_status():
     contas = db.session.execute(stmt).scalars().all()
 
     return render_template("listacontas.html", contas=contas)
+
+@contas_bp.route("/listacredores", methods=["GET"])
+def listar_credores():    
+    stmt = select(Conta).where(Conta.data_pagamento == None).order_by(Conta.data_emissao)
+    contas = db.session.execute(stmt).scalars().all()
+    return render_template("listacontas.html", contas=contas)

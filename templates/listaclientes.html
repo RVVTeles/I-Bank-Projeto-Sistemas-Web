@@ -5,21 +5,21 @@
 
 <div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
 
-    <div style="width: 80%;">
+    <div style="width: 50%;">
 
         <h1 class="w3-container">Clientes</h1>
 
         <!-- Search Bar -->
         <div class="w3-container">
-            <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome" onkeyup="filterList()" style="font-size: 14px; padding: 8px;">
+            <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome ou CPF" onkeyup="filterList()" style="font-size: 14px; padding: 8px;">
         </div>
 
         <!-- Clients List -->
         <div class="w3-container w3-margin-top" id="optionsContainer">
             {% for cliente in clientes %}
             <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
-                <h3 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h3>
-                <p style="font-size: 14px; margin: 5px 0;">CPF: {{ cliente.cpf }}</p>
+                <h2 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>
+                <h3 style="font-size: 14px; margin: 5px 0;">CPF: {{ cliente.cpf }}</h3>
                 <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
             </div>
             {% endfor %}
@@ -38,9 +38,10 @@
         
         for (let i = 0; i < optionItems.length; i++) {
             const item = optionItems[i];
-            const text = item.getElementsByTagName('h3')[0].innerText.toLowerCase();
+            const nome = item.getElementsByTagName('h2')[0].innerText.toLowerCase();
+            const cpf = item.getElementsByTagName('h3')[0].innerText.toLowerCase();
             
-            if (text.includes(input)) {
+            if (nome.includes(input) || cpf.includes(input) ) {
                 item.style.display = "block"; // Show the item
             } else {
                 item.style.display = "none"; // Hide the item
