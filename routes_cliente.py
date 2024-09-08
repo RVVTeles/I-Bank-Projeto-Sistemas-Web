@@ -13,9 +13,14 @@ def clientes():
 def criar_cliente():
     cpf = request.form.get("cpf")
     nome = request.form.get("nome")
+    numero_telefone = request.form.get("numero_telefone")
+    endereco = request.form.get("endereco")
+    numero_endereco = request.form.get("numero_endereco")
+    cidade = request.form.get("cidade")
+    estado = request.form.get("estado")
 
-    if not cpf or not nome:
-        flash("CPF e Nome precisam ser inseridos.")
+    if not cpf or not nome or not numero_telefone or not endereco or not numero_endereco or not cidade or not estado:
+        flash("Todos os dados precisam ser inseridos.")
         return redirect(url_for("clientes.clientes"))
     
     stmt = select(Cliente).where(Cliente.cpf == cpf)
@@ -25,7 +30,7 @@ def criar_cliente():
         flash("CPF já cadastrado")
         return redirect(url_for("clientes.clientes"))
 
-    novo_cliente = Cliente(cpf=cpf, nome=nome)
+    novo_cliente = Cliente(cpf=cpf, nome=nome, numero_telefone=numero_telefone, endereco=endereco, numero_endereco=numero_endereco, cidade=cidade, estado=estado)
 
     db.session.add(novo_cliente)
     db.session.commit()  
@@ -56,8 +61,14 @@ def listar_cliente():
 def atualizar_cliente():
     cpf = request.form.get("cpf")
     nome = request.form.get("nome")
-    if not cpf or not nome:
-        flash("CPF e Nome precisam ser inseridos.")
+    numero_telefone = request.form.get("numero_telefone")
+    endereco = request.form.get("endereco")
+    numero_endereco = request.form.get("numero_endereco")
+    cidade = request.form.get("cidade")
+    estado = request.form.get("estado")
+
+    if not cpf:
+        flash("CPF precisa ser inserido.")
         return redirect(url_for("clientes.clientes"))
     
     stmt = select(Cliente).where(Cliente.cpf == cpf)
@@ -66,8 +77,25 @@ def atualizar_cliente():
     if cliente is None:
         flash("CPF não cadastrado")
         return redirect(url_for("clientes.clientes"))
+    
+    if not nome and not numero_telefone and not endereco and not numero_endereco and not cidade and not estado:
+        flash(f"É necessário inserir no mínimo um dado para realizar a alteração")
+        return redirect(url_for("clientes.clientes"))
+    
+    if not nome:
+        nome = cliente.nome
+    if not numero_telefone:
+        numero_telefone = cliente.numero_telefone
+    if not endereco:
+        endereco = cliente.endereco
+    if not numero_endereco:
+        numero_endereco = cliente.numero_endereco
+    if not cidade:
+        cidade = cliente.cidade
+    if not estado:
+        estado = cliente.estado
 
-    att_stmt = update(Cliente).where(Cliente.cpf == cpf).values(nome=nome)
+    att_stmt = update(Cliente).where(Cliente.cpf == cpf).values(nome=nome, numero_telefone=numero_telefone, endereco=endereco, numero_endereco=numero_endereco, cidade=cidade, estado=estado)
     db.session.execute(att_stmt)
     db.session.commit()
 

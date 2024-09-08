@@ -20,6 +20,11 @@
             <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
                 <h2 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>
                 <h3 style="font-size: 14px; margin: 5px 0;">CPF: {{ cliente.cpf }}</h3>
+                <p style="font-size: 14px; margin: 5px 0;">Número de Telefone: {{ cliente.numero_telefone }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Endereço: {{ cliente.endereco }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Número: {{ cliente.numero_endereco }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Cidade: {{ cliente.cidade }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Estado: {{ cliente.estado }}</p>
                 <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
             </div>
             {% endfor %}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 06, 2024 at 09:38 PM
+-- Generation Time: Sep 08, 2024 at 09:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -29,20 +29,26 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `clientes` (
   `cpf` varchar(11) NOT NULL,
-  `nome` varchar(255) NOT NULL
+  `nome` varchar(255) NOT NULL,
+  `numero_telefone` int(11) NOT NULL COMMENT 'Número de telefone do cliente',
+  `endereco` varchar(255) NOT NULL,
+  `numero_endereco` varchar(10) NOT NULL,
+  `cidade` varchar(255) NOT NULL,
+  `estado` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `clientes`
 --
 
-INSERT INTO `clientes` (`cpf`, `nome`) VALUES
-('1', 'a'),
-('143225568-7', 'Adabervaldo Torres'),
-('2', 'b'),
-('3', 'c'),
-('4', 'd'),
-('5', 'g');
+INSERT INTO `clientes` (`cpf`, `nome`, `numero_telefone`, `endereco`, `numero_endereco`, `cidade`, `estado`) VALUES
+('1', 'Abner', 2147483647, 'Rua Capitão Marechal Tenente', '5012', 'Fortaleza', 'Ceará'),
+('12345678999', 'Joaquim', 2147483647, 'Rua tal', '82', 'Fortaleza', 'Ceará'),
+('143225568-7', 'Adabervaldo Torres', 0, '', '', '', ''),
+('2', 'b', 0, '', '', '', ''),
+('3', 'c', 0, '', '', '', ''),
+('4', 'd', 0, '', '', '', ''),
+('5', 'g', 0, '', '', '', '');
 
 -- --------------------------------------------------------
 
