@@ -43,6 +43,7 @@
           if (data.status === 'error') {
               alert(data.message);
           } else if (data.status === 'success') {
+              alert(data.message);
               window.location.href = data.redirect_url;
           }
       })

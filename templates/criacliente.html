@@ -8,17 +8,17 @@
     <div class="w3-twothird w3-container">
       <form id="createForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
         <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="formatted_cpf" maxlength="12"> <!-- Input for formatted CPF -->
+        <input type="text" id="cpf" name="formatted_cpf" maxlength="12">
 
-        <input type="hidden" id="cpf_hidden" name="cpf"> <!-- Hidden input to send only digits -->
+        <input type="hidden" id="cpf_hidden" name="cpf">
         
         <label for="nome">Nome:</label>
         <input type="text" id="nome" name="nome">
         
         <label for="numero_telefone">Número de Telefone:</label>
-        <input type="text" id="telefone" name="formatted_telefone" maxlength="15"> <!-- Input for formatted phone number -->
+        <input type="text" id="telefone" name="formatted_telefone" maxlength="15">
 
-        <input type="hidden" id="telefone_hidden" name="numero_telefone"> <!-- Hidden input to send only digits -->
+        <input type="hidden" id="telefone_hidden" name="numero_telefone">
         
         <label for="endereco">Endereço:</label>
         <input type="text" id="endereco" name="endereco">
@@ -75,10 +75,10 @@
   document.getElementById('createForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const formattedCpf = cpfInput.value.replace(/\D/g, '');  // Only digits
+      const formattedCpf = cpfInput.value.replace(/\D/g, '');
       hiddenCpfInput.value = formattedCpf;
 
-      const formattedTelefone = telefoneInput.value.replace(/\D/g, '');  // Only digits for phone number
+      const formattedTelefone = telefoneInput.value.replace(/\D/g, '');
       hiddenTelefoneInput.value = formattedTelefone;
 
       const formData = new FormData(this);
@@ -92,6 +92,7 @@
           if (data.status === 'error') {
               alert(data.message);
           } else if (data.status === 'success') {
+              alert(data.message);
               window.location.href = data.redirect_url;
           }
       })

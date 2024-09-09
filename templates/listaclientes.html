@@ -9,20 +9,17 @@
 
         <h1 class="w3-container">Clientes</h1>
 
-        <!-- Search Bar -->
         <div class="w3-container">
-            <div style="display: flex; align-items: center;">
-                <!-- Search Bar -->
-                <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome ou CPF" onkeyup="filterList()" style="font-size: 14px; padding: 8px; flex: 1;">
-        
-                <!-- Button -->
+            <div style="display: flex; align-items: center;">                
+                <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome ou CPF" onkeyup="filterList()" style="font-size: 14px; padding: 8px; flex: 1;">      
+                
                 <form action="/criarcliente" method="GET" style="display: inline; margin-left: 10px;">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Cliente</button>
                 </form>
             </div>
         </div>
 
-        <!-- Clients List -->
+        
         <div class="w3-container w3-margin-top" id="optionsContainer">
             {% for cliente in clientes %}
             <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
@@ -71,9 +68,7 @@
             }
         }
     }
-</script>
-
-<script>
+    
     document.querySelectorAll('.deleteForm').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
