@@ -37,37 +37,8 @@
   </div>
 </div>
 
-<script>
-  const cpfInput = document.getElementById('cpf');
-  const hiddenCpfInput = document.getElementById('cpf_hidden');
-
-  cpfInput.addEventListener('input', function() {
-      let cpf = cpfInput.value.replace(/\D/g, '');
-      if (cpf.length > 9) {
-          cpfInput.value = cpf.slice(0, 9) + '-' + cpf.slice(9, 11);
-      } else {
-          cpfInput.value = cpf;
-      }
-  });
-</script>
-
-<script>
-  const telefoneInput = document.getElementById('telefone');
-  const hiddenTelefoneInput = document.getElementById('telefone_hidden');
-
-  telefoneInput.addEventListener('input', function() {
-      let telefone = telefoneInput.value.replace(/\D/g, '');
-      if (telefone.length > 10) {
-          telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2, 7) + '-' + telefone.slice(7, 11);
-      } else if (telefone.length > 5) {
-          telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2, 7) + '-' + telefone.slice(7);
-      } else if (telefone.length > 2) {
-          telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2);
-      } else {
-          telefoneInput.value = telefone;
-      }
-  });
-</script>
+{% include "cpf_format.html" %}
+{% include "telefone_format.html" %}
 
 
 <script>

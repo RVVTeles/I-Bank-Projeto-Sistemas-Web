@@ -6,19 +6,27 @@
     <div class="w3-twothird w3-container">
       <form id="updateForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
         <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf" value="{{ cliente.cpf }}" readonly>
+        <input type="text" id="cpf" name="formatted_cpf" value="{{ cliente.cpf }}" maxlength="12" readonly>
+        <input type="hidden" id="cpf_hidden" name="cpf" value="{{ cliente.cpf }}">
+
         <label for="nome">Nome:</label>
         <input type="text" id="nome" name="nome">
+
         <label for="numero_telefone">Número de Telefone:</label>
-        <input type="text" id="numero_telefone" name="numero_telefone">
+        <input type="text" id="telefone" name="formatted_telefone" maxlength="15">
+        <input type="hidden" id="telefone_hidden" name="numero_telefone">
+
         <label for="endereco">Endereço:</label>
         <input type="text" id="endereco" name="endereco">
+
         <label for="numero_endereco">Número:</label>
         <input type="text" id="numero_endereco" name="numero_endereco">
+
         <label for="cidade">Cidade:</label>
         <input type="text" id="cidade" name="cidade">
+
         <label for="estado">Estado:</label>
-        <input type="text" id="estado" name="estado">
+        <input type="text" id="estado" name="estado">        
         <div></div>
         <input type="submit" value="Atualizar Cliente" style="margin-top: 20px; width: 45%; justify-self: end;">
       </form>
@@ -26,10 +34,29 @@
   </div>
 </div>
 
+{% include "telefone_format.html" %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var cpfInput = document.getElementById('cpf');
+      var cpfHiddenInput = document.getElementById('cpf_hidden');
+      var cpfValue = cpfHiddenInput.value.replace(/\D/g, ''); // Remove non-numeric characters
+
+      if (cpfValue.length === 11) {
+          cpfInput.value = cpfValue.slice(0, 9) + '-' + cpfValue.slice(9, 11);
+      }
+  });
+</script>
+
 <script>
   document.getElementById('updateForm').addEventListener('submit', function(e) {
       e.preventDefault();
-  
+
+      const telefoneInput = document.getElementById('telefone');
+      const hiddenTelefoneInput = document.getElementById('telefone_hidden');
+      const formattedTelefone = telefoneInput.value.replace(/\D/g, '');
+      hiddenTelefoneInput.value = formattedTelefone;
+
       const formData = new FormData(this);
   
       fetch('/atualizacliente', {

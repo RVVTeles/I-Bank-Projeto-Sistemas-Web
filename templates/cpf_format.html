@@ -1,0 +1,13 @@
+<script>
+    const cpfInput = document.getElementById('cpf');
+    const hiddenCpfInput = document.getElementById('cpf_hidden');
+  
+    cpfInput.addEventListener('input', function() {
+        let cpf = cpfInput.value.replace(/\D/g, '');
+        if (cpf.length > 9) {
+            cpfInput.value = cpf.slice(0, 9) + '-' + cpf.slice(9, 11);
+        } else {
+            cpfInput.value = cpf;
+        }
+    });
+  </script>

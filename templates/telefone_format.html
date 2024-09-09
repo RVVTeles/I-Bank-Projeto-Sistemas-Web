@@ -1,0 +1,17 @@
+<script>
+    const telefoneInput = document.getElementById('telefone');
+    const hiddenTelefoneInput = document.getElementById('telefone_hidden');
+  
+    telefoneInput.addEventListener('input', function() {
+        let telefone = telefoneInput.value.replace(/\D/g, '');
+        if (telefone.length > 10) {
+            telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2, 7) + '-' + telefone.slice(7, 11);
+        } else if (telefone.length > 5) {
+            telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2, 7) + '-' + telefone.slice(7);
+        } else if (telefone.length > 2) {
+            telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2);
+        } else {
+            telefoneInput.value = telefone;
+        }
+    });
+  </script>
