@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from sqlalchemy import select, update, delete
-from models import Cliente, db
+from models import Cliente, Conta, db
 
 clientes_bp = Blueprint("clientes", __name__)
 
@@ -65,8 +65,7 @@ def criar_cliente():
     db.session.add(novo_cliente)
     db.session.commit()  
 
-    flash("Cliente criado com sucesso!")
-    return jsonify({'status': 'success', 'redirect_url': url_for('clientes.clientes')}), 200
+    return jsonify({'status': 'success', 'message': 'Cliente criado com sucesso!', 'redirect_url': url_for('clientes.listar_clientes')}), 200
 
 
 @clientes_bp.route("/atualizacliente", methods=["POST"])
@@ -102,27 +101,20 @@ def atualizar_cliente():
     db.session.execute(att_stmt)
     db.session.commit()
 
-    flash("Cliente atualizado com sucesso")
-    return jsonify({'status': 'success', 'redirect_url': url_for('clientes.clientes')}), 200
+    return jsonify({'status': 'success', 'message': 'Informações do Cliente atualizadas com sucesso!', 'redirect_url': url_for('clientes.listar_clientes')}), 200
 
 @clientes_bp.route("/deletacliente", methods=["POST"])
 def deletar_cliente():
     cpf = request.form.get("cpf")
-
-    if not cpf:
-        flash("CPF precisa ser inserido.")
-        return redirect(url_for("clientes.clientes"))
     
-    stmt = select(Cliente).where(Cliente.cpf == cpf)
-    cliente = db.session.execute(stmt).scalars().first()
-
-    if cliente is None:
-        flash("CPF não cadastrado")
-        return redirect(url_for("clientes.clientes"))
-
+    conta_stmt = select(Conta).where(Conta.cliente_cpf == cpf)
+    contas = db.session.execute(conta_stmt).scalars().first()
+    
+    if contas is not None:
+        return jsonify({'status': 'error', 'message': 'Não é possível deletar um cliente com contas associadas'}), 400
+    
     del_stmt = delete(Cliente).where(Cliente.cpf == cpf)
     db.session.execute(del_stmt)
     db.session.commit()
 
-    flash("Cliente deletado com sucesso")
-    return redirect(url_for("clientes.listar_clientes"))
+    return jsonify({'status': 'success', 'message': 'Cliente deletado com sucesso!'}), 200

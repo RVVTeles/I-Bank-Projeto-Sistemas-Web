@@ -8,13 +8,17 @@
     <div class="w3-twothird w3-container">
       <form id="createForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
         <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf">
+        <input type="text" id="cpf" name="formatted_cpf" maxlength="12"> <!-- Input for formatted CPF -->
+
+        <input type="hidden" id="cpf_hidden" name="cpf"> <!-- Hidden input to send only digits -->
         
         <label for="nome">Nome:</label>
         <input type="text" id="nome" name="nome">
         
         <label for="numero_telefone">Número de Telefone:</label>
-        <input type="text" id="numero_telefone" name="numero_telefone">
+        <input type="text" id="telefone" name="formatted_telefone" maxlength="15"> <!-- Input for formatted phone number -->
+
+        <input type="hidden" id="telefone_hidden" name="numero_telefone"> <!-- Hidden input to send only digits -->
         
         <label for="endereco">Endereço:</label>
         <input type="text" id="endereco" name="endereco">
@@ -35,9 +39,48 @@
 </div>
 
 <script>
+  const cpfInput = document.getElementById('cpf');
+  const hiddenCpfInput = document.getElementById('cpf_hidden');
+
+  cpfInput.addEventListener('input', function() {
+      let cpf = cpfInput.value.replace(/\D/g, '');
+      if (cpf.length > 9) {
+          cpfInput.value = cpf.slice(0, 9) + '-' + cpf.slice(9, 11);
+      } else {
+          cpfInput.value = cpf;
+      }
+  });
+</script>
+
+<script>
+  const telefoneInput = document.getElementById('telefone');
+  const hiddenTelefoneInput = document.getElementById('telefone_hidden');
+
+  telefoneInput.addEventListener('input', function() {
+      let telefone = telefoneInput.value.replace(/\D/g, '');
+      if (telefone.length > 10) {
+          telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2, 7) + '-' + telefone.slice(7, 11);
+      } else if (telefone.length > 5) {
+          telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2, 7) + '-' + telefone.slice(7);
+      } else if (telefone.length > 2) {
+          telefoneInput.value = '(' + telefone.slice(0, 2) + ') ' + telefone.slice(2);
+      } else {
+          telefoneInput.value = telefone;
+      }
+  });
+</script>
+
+
+<script>
   document.getElementById('createForm').addEventListener('submit', function(e) {
       e.preventDefault();
-  
+
+      const formattedCpf = cpfInput.value.replace(/\D/g, '');  // Only digits
+      hiddenCpfInput.value = formattedCpf;
+
+      const formattedTelefone = telefoneInput.value.replace(/\D/g, '');  // Only digits for phone number
+      hiddenTelefoneInput.value = formattedTelefone;
+
       const formData = new FormData(this);
   
       fetch('/criacliente', {

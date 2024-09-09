@@ -26,8 +26,8 @@
         <div class="w3-container w3-margin-top" id="optionsContainer">
             {% for cliente in clientes %}
             <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
-                <h2 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>
-                <h3 style="font-size: 14px; margin: 5px 0;">CPF: {{ cliente.cpf }}</h3>
+                <h3 style="font-size: 18px; margin: 5px 0;">CPF: {{ cliente.cpf }}</h3>
+                <h2 style="font-size: 18px; margin: 5px 0; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>                
                 <p style="font-size: 14px; margin: 5px 0;">Número de Telefone: {{ cliente.numero_telefone }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Endereço: {{ cliente.endereco }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Número: {{ cliente.numero_endereco }}</p>
@@ -39,7 +39,7 @@
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Editar</button>
                 </form>
 
-                <form action="/deletacliente" method="POST" style="display: inline;">
+                <form class="deleteForm" method="POST" style="display: inline;">
                     <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
                     <button type="submit" class="w3-button w3-red" style="font-size: 14px; margin-left: 8px;">Deletar</button>
                 </form>
@@ -65,12 +65,44 @@
             const cpf = item.getElementsByTagName('h3')[0].innerText.toLowerCase();
             
             if (nome.includes(input) || cpf.includes(input) ) {
-                item.style.display = "block"; // Show the item
+                item.style.display = "block";
             } else {
-                item.style.display = "none"; // Hide the item
+                item.style.display = "none";
             }
         }
     }
 </script>
 
+<script>
+    document.querySelectorAll('.deleteForm').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const clientName = this.closest('.option-item').querySelector('h2').innerText.split(": ")[1];
+
+            const confirmation = confirm(`O Cliente ${clientName} será deletado, esta ação não pode ser desfeita. Deseja prosseguir?`);
+
+            if (confirmation) {
+                const formData = new FormData(this);
+
+                fetch('/deletacliente', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'error') {
+                        alert(data.message);
+                    } else if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Ação cancelada.');
+            }
+        });
+    });
+  </script>
 </html>
