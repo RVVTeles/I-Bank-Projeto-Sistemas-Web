@@ -4,9 +4,9 @@ from models import Cliente, Conta, db
 
 clientes_bp = Blueprint("clientes", __name__)
 
-@clientes_bp.route("/clientes")
+@clientes_bp.route("/cliente")
 def clientes():
-    return render_template("clientes.html")
+    return render_template("cliente.html")
 
 @clientes_bp.route("/criarcliente")
 def criar_cliente_page():
