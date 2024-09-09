@@ -11,7 +11,15 @@
 
         <!-- Search Bar -->
         <div class="w3-container">
-            <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome ou CPF" onkeyup="filterList()" style="font-size: 14px; padding: 8px;">
+            <div style="display: flex; align-items: center;">
+                <!-- Search Bar -->
+                <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome ou CPF" onkeyup="filterList()" style="font-size: 14px; padding: 8px; flex: 1;">
+        
+                <!-- Button -->
+                <form action="/criarcliente" method="GET" style="display: inline; margin-left: 10px;">
+                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Cliente</button>
+                </form>
+            </div>
         </div>
 
         <!-- Clients List -->
@@ -25,7 +33,17 @@
                 <p style="font-size: 14px; margin: 5px 0;">Número: {{ cliente.numero_endereco }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Cidade: {{ cliente.cidade }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Estado: {{ cliente.estado }}</p>
-                <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
+
+                <form action="/editacliente" method="POST" style="display: inline;">
+                    <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
+                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Editar</button>
+                </form>
+
+                <form action="/deletacliente" method="POST" style="display: inline;">
+                    <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
+                    <button type="submit" class="w3-button w3-red" style="font-size: 14px; margin-left: 8px;">Deletar</button>
+                </form>
+
             </div>
             {% endfor %}
         </div>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "header.html" %}
+<div class="w3-main" style="margin:50px">
+  <h1>Editar Cliente</h1>
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container">
+      <form id="updateForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
+        <label for="cpf">CPF:</label>
+        <input type="text" id="cpf" name="cpf" value="{{ cliente.cpf }}" readonly>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome">
+        <label for="numero_telefone">Número de Telefone:</label>
+        <input type="text" id="numero_telefone" name="numero_telefone">
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco">
+        <label for="numero_endereco">Número:</label>
+        <input type="text" id="numero_endereco" name="numero_endereco">
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" name="cidade">
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" name="estado">
+        <div></div>
+        <input type="submit" value="Atualizar Cliente" style="margin-top: 20px; width: 30%; justify-self: end;">
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('updateForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+  
+      const formData = new FormData(this);
+  
+      fetch('/atualizacliente', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.status === 'error') {
+              alert(data.message);
+          } else if (data.status === 'success') {
+              window.location.href = data.redirect_url;
+          }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+</script>
+{% include "footer.html" %}
+</html>

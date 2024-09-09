@@ -8,9 +8,9 @@ class Cliente(db.Model):
 
     cpf = db.Column(db.String(11) , primary_key=True)
     nome = db.Column(db.String(255), nullable=False)
-    numero_telefone = db.Column(db.Integer, nullable=False)
+    numero_telefone = db.Column(db.String(20), nullable=False)
     endereco = db.Column(db.String(255), nullable=False)
-    numero_endereco = db.Column(db.String(10), nullable=False)
+    numero_endereco = db.Column(db.String(20), nullable=False)
     cidade = db.Column(db.String(255), nullable=False)
     estado = db.Column(db.String(255), nullable=False)
 
