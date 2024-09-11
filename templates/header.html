@@ -1,25 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <title>Projeto Sistemas Web</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <style>
-    html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
-    .w3-sidebar {
-    z-index: 3;
-    width: 250px;
-    top: 43px;
-    bottom: 0;
-    height: inherit;
-  }
-  </style>
+    <title>Projeto Sistemas Web</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
   </head>
-  <body>
+  <body class="{{ 'home' if request.path == '/' else '' }}">
 
   <!-- Navbar -->
   <div class="w3-top">
@@ -43,5 +34,3 @@
     <h4 class="w3-bar-item"><b>Contas</b></h4>
     <a class="w3-bar-item w3-button w3-hover-black" href="/contas">Contas</a>
   </nav>
-
-  <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
