@@ -11,7 +11,16 @@ def contas():
 
 @contas_bp.route("/criarconta")
 def criar_conta():
-    return render_template("criarconta.html")  
+    return render_template("criarconta.html")
+
+@contas_bp.route("/editaconta", methods=["POST"])
+def edita_conta():
+    id = request.form.get("id")
+    
+    stmt = select(Conta).where(Conta.id == id)
+    conta = db.session.execute(stmt).scalars().first()
+
+    return render_template("editaconta.html", conta=conta)  
 
 @contas_bp.route("/criaconta", methods=["POST"])
 def cria_conta():
@@ -103,19 +112,16 @@ def atualizar_conta():
     data_vencimento = request.form.get("data_vencimento")
 
     if not id:
-        flash("ID da conta precisa ser inserida.")
-        return redirect(url_for("contas.contas")) 
+        return jsonify({'status': 'error', 'message': 'ID da conta precisa ser inserida.'}), 400
        
     stmt = select(Conta).where(Conta.id == id)
     conta = db.session.execute(stmt).scalars().first()
 
     if not conta:
-        flash(f"Nenhuma conta associada ao ID {id}")
-        return redirect(url_for("contas.contas"))
+        return jsonify({'status': 'error', 'message': 'Nenhuma conta associada ao ID {id}'}), 400
     
     if not cliente_cpf and not valor and not juros and not data_vencimento:
-        flash(f"É necessário inserir no mínimo um dado para realizar a alteração")
-        return redirect(url_for("contas.contas"))
+        return jsonify({'status': 'error', 'message': 'É necessário inserir no mínimo um dado para realizar a alteração'}), 400
     
     if not cliente_cpf:
         cliente_cpf = conta.cliente_cpf
@@ -132,9 +138,8 @@ def atualizar_conta():
     db.session.execute(att_stmt)
     db.session.commit()
 
-    flash("Conta atualizada com sucesso")
-    return redirect(url_for("contas.contas"))
-
+    
+    return jsonify({'status': 'success', 'message': 'Conta atualizada com sucesso!', 'redirect_url': url_for('contas.listar_contas')}), 200
 
 @contas_bp.route("/deletaconta", methods=["POST"])
 def deletar_conta():

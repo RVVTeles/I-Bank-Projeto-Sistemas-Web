@@ -42,7 +42,10 @@
                     <p style="font-size: 14px; margin: 5px 0;">Valor Pago: R${{ conta.valor + ((conta.data_pagamento - conta.data_vencimento).days * conta.juros) }}</p>
                     {% endif %}
                 {% endif%}
-                <button class="w3-button w3-theme" onclick="location.href='#'" style="font-size: 14px;">Details</button>
+                <form action="/editaconta" method="POST" style="display: inline;">
+                    <input type="hidden" name="id" value="{{ conta.id }}">
+                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Atualizar</button>
+                </form>
             </div>
             {% endfor %}
         </div>

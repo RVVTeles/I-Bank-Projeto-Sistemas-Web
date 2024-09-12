@@ -1,0 +1,68 @@
+{% include "header.html" %}
+<div class="w3-main" style="margin:50px">
+
+  <div class="w3-row w3-padding-64" style="margin-left: 250px;">
+    <h1>Atualizar Cliente</h1>
+    <div class="w3-twothird w3-container">
+      <form id="updateForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
+        <label for="id">ID: </label>
+        <input type="text" id="id" name="id" value="{{  conta.id  }}" readonly>
+
+        <label for="cliente_cpf">CPF do cliente:</label>
+        <input type="text" id="cliente_cpf" name="cliente_cpf">
+
+        <label for="valor">Valor:</label>
+        <input type="text" id="valor" name="valor">
+
+        <label for="juros">Juros:</label>
+        <input type="text" id="juros" name="juros">
+
+        <label for="data_vencimento">Data de vencimento:</label>
+        <input type="date" id="data_vencimento" name="data_vencimento">
+        <div></div>
+        <input type="submit" value="Atualizar Conta" style="margin-top: 20px; width: 45%; justify-self: end;">
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    const cpfInput = document.getElementById('cliente_cpf');
+    const hiddenCpfInput = document.getElementById('cpf_hidden');
+
+    cpfInput.addEventListener('input', function() {
+        let cliente_cpf = cpfInput.value.replace(/\D/g, '');
+        if (cliente_cpf.length > 9) {
+            cpfInput.value = cliente_cpf.slice(0, 9) + '-' + cliente_cpf.slice(9, 11);
+        } else {
+            cpfInput.value = cliente_cpf;
+        }
+    });
+</script>
+
+<script>
+    document.getElementById('createForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+  
+        const formattedCpf = cpfInput.value.replace(/\D/g, '');
+        hiddenCpfInput.value = formattedCpf;
+  
+        const formData = new FormData(this);
+    
+        fetch('/atualizaconta', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'error') {
+                alert(data.message);
+            } else if (data.status === 'success') {
+                alert(data.message);
+                window.location.href = data.redirect_url;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  </script>
+{% include "footer.html" %}
