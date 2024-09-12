@@ -10,7 +10,7 @@ def clientes():
 
 @clientes_bp.route("/criarcliente")
 def criar_cliente_page():
-    return render_template("criacliente.html")
+    return render_template("criarcliente.html")
 
 
 @clientes_bp.route("/editacliente", methods=["POST"])

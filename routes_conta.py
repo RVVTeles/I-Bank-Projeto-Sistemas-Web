@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from datetime import datetime
 from models import Conta, Cliente, db
 from sqlalchemy import and_, delete, select, update
@@ -9,9 +9,12 @@ contas_bp = Blueprint("contas", __name__)
 def contas():
     return render_template("contas.html")  
 
+@contas_bp.route("/criarconta")
+def criar_conta():
+    return render_template("criarconta.html")  
 
 @contas_bp.route("/criaconta", methods=["POST"])
-def criar_conta():
+def cria_conta():
     cliente_cpf = request.form.get("cliente_cpf")
     valor = request.form.get("valor")
     juros = request.form.get("juros")
@@ -19,19 +22,16 @@ def criar_conta():
     data_vencimento = request.form.get("data_vencimento")
 
     if not cliente_cpf or not valor or not juros or not data_emissao or not data_vencimento:
-        flash("Por favor, preencha todos os campos.")
-        return redirect(url_for("contas.contas"))
+        return jsonify({'status': 'error', 'message': 'Por favor, preencha todos os campos'}), 400
     
     if data_vencimento < data_emissao:
-        flash("A data de vencimento precisa ser maior do que a data de emissão")
-        return redirect(url_for("contas.contas"))
+        return jsonify({'status': 'error', 'message': 'A data de vencimento precisa ser maior do que a data de emissão'}), 400
     
     stmt = select(Cliente).where(Cliente.cpf == cliente_cpf)
     cliente = db.session.execute(stmt).scalars().first()
 
     if cliente is None:
-        flash("CPF não cadastrado")
-        return redirect(url_for("contas.contas"))
+        return jsonify({'status': 'error', 'message': 'CPF não cadastrado'}), 400
 
 
     nova_conta = Conta(cliente_cpf=cliente_cpf, valor=valor, juros=juros, data_emissao=data_emissao, data_vencimento=data_vencimento)
@@ -39,8 +39,7 @@ def criar_conta():
     db.session.add(nova_conta)
     db.session.commit()  
 
-    flash("Conta criada com sucesso!")
-    return redirect(url_for("contas.contas"))
+    return jsonify({'status': 'success', 'message': 'Conta criada com sucesso!', 'redirect_url': url_for('contas.listar_contas')}), 200
 
 @contas_bp.route("/listacontas", methods=["GET"])
 def listar_contas():    

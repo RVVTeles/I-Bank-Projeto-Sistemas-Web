@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
 {% include "header.html" %}
 <div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
 
@@ -9,11 +6,14 @@
         <h1 class="w3-container">Contas</h1>
 
         <div class="w3-container" style="display: flex;">
-            <select id="searchType" class="w3-select w3-border w3-round" style="width: 20%; margin-right: 10px;">
+            <select id="searchType" class="w3-select w3-border w3-round" style="width: 10%; margin-right: 10px;">
                 <option value="id" selected>ID</option>
                 <option value="cpf">CPF</option>
             </select>
             <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Contas" onkeyup="filterList()" style="font-size: 14px; padding: 8px; width: 80%;">
+            <form action="/criarconta" method="GET" style="display: inline; margin-left: 10px;">
+                <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Conta</button>
+            </form>
         </div>  
 
         <div class="w3-container w3-margin-top" id="optionsContainer">
@@ -69,7 +69,7 @@
                     text = item.getAttribute('data-cpf').toLowerCase();
                 }
 
-                if (text.includes(input)) {
+                if (text.startsWith(input)) {
                     item.style.display = "block";
                 } else {
                     item.style.display = "none";
@@ -102,5 +102,3 @@
             });
         });
     </script>
-    
-</html>

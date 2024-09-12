@@ -1,0 +1,70 @@
+{% include "header.html" %}
+<div class="w3-main" style="margin-left:250px; padding-top: 50px; display: flex;">
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container" style="margin-left: 100px;">
+      <h1 style="margin-bottom: 20px;">Criar Conta:</h1>
+      <form id="createForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
+        
+        <label for="cliente_cpf">CPF do Cliente:</label>
+        <input type="text" id="cliente_cpf" name="formatted_cpf" maxlength="12">
+
+        <input type="hidden" id="cpf_hidden" name="cliente_cpf">
+        
+        <label for="valor">Valor:</label>
+        <input type="text" id="valor" name="valor">
+        
+        <label for="juros">Juros:</label>
+        <input type="text" id="juros" name="juros">
+        
+        <label for="data_emissao">Data de emissão:</label>
+        <input type="date" id="data_emissao" name="data_emissao">
+
+        <label for="data_vencimento">Data de vencimento:</label>
+        <input type="date" id="data_vencimento" name="data_vencimento">
+        <div></div>
+        <input type="submit" value="Criar Conta" style="margin-top: 20px; width: 55%; justify-self: end;">
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    const cpfInput = document.getElementById('cliente_cpf');
+    const hiddenCpfInput = document.getElementById('cpf_hidden');
+  
+    cpfInput.addEventListener('input', function() {
+        let cliente_cpf = cpfInput.value.replace(/\D/g, '');
+        if (cliente_cpf.length > 9) {
+            cpfInput.value = cliente_cpf.slice(0, 9) + '-' + cliente_cpf.slice(9, 11);
+        } else {
+            cpfInput.value = cliente_cpf;
+        }
+    });
+  </script>
+
+<script>
+  document.getElementById('createForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formattedCpf = cpfInput.value.replace(/\D/g, '');
+      hiddenCpfInput.value = formattedCpf;
+
+      const formData = new FormData(this);
+  
+      fetch('/criaconta', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.status === 'error') {
+              alert(data.message);
+          } else if (data.status === 'success') {
+              alert(data.message);
+              window.location.href = data.redirect_url;
+          }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+</script>
+{% include "footer.html" %}
