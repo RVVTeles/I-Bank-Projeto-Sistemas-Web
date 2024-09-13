@@ -1,0 +1,89 @@
+{% include "header.html" %}
+<div class="w3-main" style="margin:50px">
+  <div class="w3-row w3-padding-64" style="margin-left: 250px;">
+    <h1>Pagar Conta</h1>
+    <div class="w3-twothird w3-container">
+      <form id="paymentForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
+        <label for="id">Id da conta:</label>
+        <input type="text" id="id" name="id" value="{{ conta.id }}" readonly>
+
+        <label for="valor">Valor: R$</label>
+        <input type="text" id="valor" name="valor" value="{{ conta.valor }}" readonly>
+
+        <label for="juros">Juros diário: R$</label>
+        <input type="text" id="juros" name="juros" value="{{ conta.juros }}" readonly>
+
+        <label for="data_vencimento">Data de vencimento:</label>
+        <input type="date" id="data_vencimento" name="data_vencimento" value="{{ conta.data_vencimento }}" readonly>
+
+        <label for="data_pagamento">Data de Pagamento:</label>
+        <input type="date" id="data_pagamento" name="data_pagamento">
+
+        <!-- New fields for calculated interest and total value -->
+        <label for="calculated_interest">Juros Calculados: R$</label>
+        <input type="text" id="calculated_interest" readonly>
+
+        <label for="new_total">Valor Total: R$</label>
+        <input type="text" id="new_total" readonly>
+
+        <div></div>
+        <input type="submit" value="Pagar Conta" style="margin-top: 20px; width: 45%; justify-self: end;">       
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    function setMinPaymentDate() {
+        const minDate = new Date();
+        const formattedDate = minDate.toISOString().split('T')[0];
+        document.getElementById('data_pagamento').setAttribute('min', formattedDate);
+    }
+
+    window.onload = function() {
+        setMinPaymentDate();
+    };
+
+    document.getElementById('data_pagamento').addEventListener('change', function() {
+        const dataVencimento = new Date(document.getElementById('data_vencimento').value);
+        const dataPagamento = new Date(this.value);
+        const juros = parseFloat(document.getElementById('juros').value);
+        const valor = parseFloat(document.getElementById('valor').value);
+
+        if (dataPagamento > dataVencimento) {
+            const diffTime = Math.abs(dataPagamento - dataVencimento);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            const calculatedInterest = diffDays * juros;
+            const newTotal = valor + calculatedInterest;
+
+            document.getElementById('calculated_interest').value = `R$ ${calculatedInterest.toFixed(2)}`;
+            document.getElementById('new_total').value = `R$ ${newTotal.toFixed(2)}`;
+        } else {
+            document.getElementById('calculated_interest').value = 'R$ 0.00';
+            document.getElementById('new_total').value = `R$ ${valor.toFixed(2)}`;
+        }
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch('/pagarconta', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'error') {
+                alert(data.message);
+            } else if (data.status === 'success') {
+                alert(data.message);
+                window.location.href = data.redirect_url;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+{% include "footer.html" %}

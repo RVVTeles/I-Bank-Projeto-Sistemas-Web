@@ -4,32 +4,7 @@
 {% include "header.html" %}
 <div class="w3-main" style="margin:50px; margin-left: 350px;">
   
-  <div class="w3-row w3-padding-64">
-    <h1>Criar Conta</h1>
-    <div class="w3-twothird w3-container">
-      <form action="/criaconta" method="post">
-        <label for="cliente_cpf">CPF Cliente:</label>
-        <input type="text" id="cliente_cpf" name="cliente_cpf"><br><br>
-        <label for="valor">Valor:</label>
-        <input type="text" id="valot" name="valor"><br><br>
-        <label for="juros">Juros:</label>
-        <input type="text" id="juros" name="juros"><br><br>
-        <label for="data_emissao">Data de emissão:</label>
-        <input type="date" id="data_emissao" name="data_emissao"><br><br>
-        <label for="data_vencimento">Data de vencimento:</label>
-        <input type="date" id="data_vencimento" name="data_vencimento"><br><br>
-        <input type="submit" value="Criar Conta">
-      </form>
-    </div>
-  </div>
-  <h1>Listar Todas as Contas</h1>
-  <div class="w3-row w3-padding-64">
-    <div class="w3-twothird w3-container">
-      <form action="/listacontas" method="get">
-        <input type="submit" value="Listar Contas">
-      </form>
-    </div>
-  </div>
+  
   <h1>Listar Contas do Cliente</h1>
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
@@ -37,46 +12,6 @@
         <label for="cliente_cpf">CPF do Cliente:</label>
         <input type="text" id="cliente_cpf" name="cliente_cpf"><br><br>
         <input type="submit" value="Listar Conta">
-      </form>
-    </div>
-  </div>
-  <h1>Pagar Conta</h1>
-  <div class="w3-row w3-padding-64">
-    <div class="w3-twothird w3-container">
-      <form action="/pagaconta" method="post">
-        <label for="id">Id da conta:</label>
-        <input type="text" id="id" name="id"><br><br>
-        <label for="data_pagamento">Data de Pagamento:</label>
-        <input type="date" id="data_pagamento" name="data_pagamento"><br><br>
-        <input type="submit" value="Pagar Conta">
-      </form>
-    </div>
-  </div>
-  <h1>Atualizar Conta</h1>
-  <div class="w3-row w3-padding-64">
-    <div class="w3-twothird w3-container">
-      <form action="/atualizaconta" method="post">
-        <label for="id">Id da conta:</label>
-        <input type="text" id="id" name="id"><br><br>
-        <label for="cliente_cpf">CPF do cliente:</label>
-        <input type="text" id="cliente_cpf" name="cliente_cpf"><br><br>
-        <label for="valor">Valor:</label>
-        <input type="text" id="valor" name="valor"><br><br>
-        <label for="juros">Juros:</label>
-        <input type="text" id="juros" name="juros"><br><br>
-        <label for="data_vencimento">Data de vencimento:</label>
-        <input type="date" id="data_vencimento" name="data_vencimento"><br><br>
-        <input type="submit" value="Atualizar Conta">
-      </form>
-    </div>
-  </div>
-  <h1>Deletar Conta</h1>
-  <div class="w3-row w3-padding-64">
-    <div class="w3-twothird w3-container">
-      <form action="/deletaconta" method="post">
-        <label for="id">ID da conta:</label>
-        <input type="text" id="id" name="id"><br><br>
-        <input type="submit" value="Deletar Conta">
       </form>
     </div>
   </div>
@@ -120,14 +55,6 @@
       </form>
     </div>
   </div>
-  <h1>Lista Credores</h1>
-  <div class="w3-row w3-padding-64">
-    <div class="w3-twothird w3-container">
-      <form action="/listacredores" method="get">
-        <input type="submit" value="Listar Credores">
-      </form>
-    </div>
-  </div>  
 </div>
 {% include "footer.html" %}
 </html>

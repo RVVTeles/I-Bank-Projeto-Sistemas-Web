@@ -46,6 +46,14 @@
                     <input type="hidden" name="id" value="{{ conta.id }}">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Atualizar</button>
                 </form>
+                <form class="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="id" value="{{ conta.id }}">
+                    <button type="submit" class="w3-button w3-red" style="font-size: 14px; margin-left: 8px;">Deletar</button>
+                </form>
+                <form action="/pagaconta" method="POST" style="display: inline;">
+                    <input type="hidden" name="id" value="{{ conta.id }}">
+                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px; float:right">Pagar</button>
+                </form>
             </div>
             {% endfor %}
         </div>
@@ -84,6 +92,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
     
             const contaItems = document.querySelectorAll('.option-item');
             contaItems.forEach(function(item) {
@@ -91,6 +100,8 @@
                 const pagamentoStr = item.getAttribute('data-pagamento');
                 
                 const vencimento = new Date(vencimentoStr);
+                vencimento.setHours(0, 0, 0, 0);
+
                 const pagamento = pagamentoStr ? new Date(pagamentoStr) : null;
     
                 const statusElement = item.querySelector('p[id^="status_"]');
@@ -104,4 +115,36 @@
                 }
             });
         });
+    </script>
+    <script>
+        document.querySelectorAll('.deleteForm').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const contaid = this.closest('.option-item').querySelector('h3').innerText.split(": ")[1];
+
+            const confirmation = confirm(`A conta ${contaid} será deletada, esta ação não pode ser desfeita. Deseja prosseguir?`);
+
+            if (confirmation) {
+                const formData = new FormData(this);
+
+                fetch('/deletaconta', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'error') {
+                        alert(data.message);
+                    } else if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Ação cancelada.');
+            }
+        });
+    });
     </script>

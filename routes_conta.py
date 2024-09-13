@@ -22,6 +22,15 @@ def edita_conta():
 
     return render_template("editaconta.html", conta=conta)  
 
+@contas_bp.route("/pagaconta", methods=["POST"])
+def paga_conta():
+    id = request.form.get("id")
+    
+    stmt = select(Conta).where(Conta.id == id)
+    conta = db.session.execute(stmt).scalars().first()
+
+    return render_template("pagarconta.html", conta=conta)  
+
 @contas_bp.route("/criaconta", methods=["POST"])
 def cria_conta():
     cliente_cpf = request.form.get("cliente_cpf")
@@ -77,31 +86,22 @@ def listar_conta():
 
     return render_template("listacontas.html", contas=contas)
 
-@contas_bp.route("/pagaconta", methods=["POST"])
+@contas_bp.route("/pagarconta", methods=["POST"])
 def pagar_conta():
     id = request.form.get("id")
     data_pagamento = request.form.get("data_pagamento")
-    if not id:
-        flash("ID da conta precisa ser inserida.")
-        return redirect(url_for("contas.contas")) 
        
     stmt = select(Conta).where(Conta.id == id)
     conta = db.session.execute(stmt).scalars().first()
-
-    if not conta:
-        flash(f"Nenhuma conta associada ao ID {id}")
-        return redirect(url_for("contas.contas"))
     
-    if not id and not data_pagamento:
-        flash(f"É necessário inserir o ID da conta e a data de pagamento")
-        return redirect(url_for("contas.contas"))
+    if not data_pagamento:
+        return jsonify({'status': 'error', 'message': 'É necessário inserir a data de pagamento'}), 400
     
     att_stmt = update(Conta).where(Conta.id == id).values(data_pagamento=data_pagamento)
     db.session.execute(att_stmt)
     db.session.commit()
 
-    flash("Conta paga com sucesso")
-    return redirect(url_for("contas.contas"))
+    return jsonify({'status': 'success', 'message': 'Pagamento realizado com sucesso!', 'redirect_url': url_for('contas.listar_contas')}), 200
 
 @contas_bp.route("/atualizaconta", methods=["POST"])
 def atualizar_conta():
@@ -144,24 +144,14 @@ def atualizar_conta():
 @contas_bp.route("/deletaconta", methods=["POST"])
 def deletar_conta():
     id = request.form.get("id")
-
-    if not id:
-        flash("ID da conta precisa ser inserido.")
-        return redirect(url_for("contas.contas"))
     
     stmt = select(Conta).where(Conta.id == id)
     conta = db.session.execute(stmt).scalars().first()
 
-    if conta is None:
-        flash("Conta com este ID não existe")
-        return redirect(url_for("contas.contas"))
-
     del_stmt = delete(Conta).where(Conta.id == id)
     db.session.execute(del_stmt)
     db.session.commit()
-
-    flash("Conta deletada com sucesso")
-    return redirect(url_for("contas.contas"))
+    return jsonify({'status': 'success', 'message': 'Conta deletada com sucesso!'}), 200
 
 @contas_bp.route("/contasapagar", methods=["POST"])
 def contas_a_pagar():
