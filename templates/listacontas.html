@@ -108,7 +108,7 @@
 
                 if (pagamento) {
                     statusElement.textContent = "Status da Conta: paga";
-                } else if (today > vencimento) {
+                } else if (today < vencimento) {
                     statusElement.textContent = "Status da Conta: em atraso";
                 } else {
                     statusElement.textContent = "Status da Conta: a pagar";
