@@ -1,19 +1,19 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from sqlalchemy import select, update, delete
-from models import Cliente, Conta, db
+from .models import Cliente, Conta, db
 
 clientes_bp = Blueprint("clientes", __name__)
 
-@clientes_bp.route("/cliente")
+@clientes_bp.route("/")
 def clientes():
     return render_template("cliente.html")
 
-@clientes_bp.route("/criarcliente")
+@clientes_bp.route("/criar")
 def criar_cliente_page():
     return render_template("criarcliente.html")
 
 
-@clientes_bp.route("/editacliente", methods=["POST"])
+@clientes_bp.route("/editar", methods=["POST"])
 def editar_cliente():
     cpf = request.form.get("cpf")
     
@@ -29,14 +29,13 @@ def listar_clientes():
     clientes = db.session.execute(stmt).scalars().all()
     return render_template("listaclientes.html", clientes=clientes)
 
-@clientes_bp.route("/listacliente", methods=["GET"])
+@clientes_bp.route("/listacliente", methods=["POST"])
 def listar_cliente():
-    cpf = request.args.get("cpf")
+    cpf = request.form.get("cpf")
     stmt = select(Cliente).where(Cliente.cpf == cpf)
     cliente = db.session.execute(stmt).scalars().first()
     if cliente is None:
-        flash("CPF não cadastrado")
-        return redirect(url_for("clientes.clientes"))
+        return jsonify({'status': 'error', 'message': 'CPF não cadastrado'}), 400
 
     return render_template("listacliente.html", cliente=cliente)
 
@@ -68,7 +67,7 @@ def criar_cliente():
     return jsonify({'status': 'success', 'message': 'Cliente criado com sucesso!', 'redirect_url': url_for('clientes.listar_clientes')}), 200
 
 
-@clientes_bp.route("/atualizacliente", methods=["POST"])
+@clientes_bp.route("/editacliente", methods=["POST"])
 def atualizar_cliente():
     cpf = request.form.get("cpf")
     nome = request.form.get("nome")
@@ -103,7 +102,7 @@ def atualizar_cliente():
 
     return jsonify({'status': 'success', 'message': 'Informações do Cliente atualizadas com sucesso!', 'redirect_url': url_for('clientes.listar_clientes')}), 200
 
-@clientes_bp.route("/deletacliente", methods=["POST"])
+@clientes_bp.route("/deletar", methods=["POST"])
 def deletar_cliente():
     cpf = request.form.get("cpf")
     

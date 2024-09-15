@@ -2,14 +2,15 @@
 <div class="w3-main" style="margin:50px">
 
   <div class="w3-row w3-padding-64" style="margin-left: 250px;">
-    <h1>Atualizar Conta</h1>
+    <h1>Editar Conta</h1>
     <div class="w3-twothird w3-container">
       <form id="updateForm" method="post" style="display: grid; grid-template-columns: 150px 1fr; gap: 20px 10px; align-items: center; width: 50%;">
         <label for="id">ID: </label>
         <input type="text" id="id" name="id" value="{{  conta.id  }}" readonly>
 
         <label for="cliente_cpf">CPF do cliente:</label>
-        <input type="text" id="cliente_cpf" name="cliente_cpf">
+        <input type="text" id="cliente_cpf" name="formatted_cpf">
+        <input type="hidden" id="cpf_hidden" name="cliente_cpf">
 
         <label for="valor">Valor:</label>
         <input type="text" id="valor" name="valor">
@@ -20,7 +21,7 @@
         <label for="data_vencimento">Data de vencimento:</label>
         <input type="date" id="data_vencimento" name="data_vencimento">
         <div></div>
-        <input type="submit" value="Atualizar Conta" style="margin-top: 20px; width: 45%; justify-self: end;">
+        <input type="submit" value="Editar Conta" style="margin-top: 20px; width: 45%; justify-self: end;">
       </form>
     </div>
   </div>
@@ -41,15 +42,15 @@
 </script>
 
 <script>
-    document.getElementById('createForm').addEventListener('submit', function(e) {
+    document.getElementById('updateForm').addEventListener('submit', function(e) {
         e.preventDefault();
   
-        const formattedCpf = cpfInput.value.replace(/\D/g, '');
+        const formattedCpf = cpfInput.value.replace(/\D/g, '').trim();
         hiddenCpfInput.value = formattedCpf;
   
         const formData = new FormData(this);
     
-        fetch('/atualizaconta', {
+        fetch('/Contas/editaconta', {
             method: 'POST',
             body: formData
         })

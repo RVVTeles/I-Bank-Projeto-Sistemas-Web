@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "header.html" %}
+
+<div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
+
+    <div style="width: 50%;">
+
+        <h1 class="w3-container">Cliente</h1>
+        
+        <div class="w3-container w3-margin-top" id="optionsContainer">
+            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
+                <h3 style="font-size: 14px; margin: 5px 0;">CPF: <span class="cpf">{{ cliente.cpf }}</span></h3>
+                <h2 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>                
+                <p style="font-size: 14px; margin: 5px 0;">Número de Telefone: <span class="telefone">{{ cliente.numero_telefone }}</span></p>
+                <p style="font-size: 14px; margin: 5px 0;">Endereço: {{ cliente.endereco }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Número: {{ cliente.numero_endereco }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Cidade: {{ cliente.cidade }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Estado: {{ cliente.estado }}</p>
+    
+                <form action="/Clientes/editar" method="POST" style="display: inline;">
+                    <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
+                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Editar</button>
+                </form>
+    
+                <form class="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
+                    <button type="submit" class="w3-button w3-red" style="font-size: 14px; margin-left: 8px;">Deletar</button>
+                </form>
+    
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% include "footer.html" %}
+<script>
+    function formatCPF(cpf) {
+            return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1$2$3-$4");
+        }
+
+    function formatNumeroTelefone(telefone) {
+        return telefone.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+    }
+
+    document.querySelectorAll('.cpf').forEach(function(element) {
+        element.innerText = formatCPF(element.innerText);
+    });
+
+    document.querySelectorAll('.telefone').forEach(function(element) {
+        element.innerText = formatNumeroTelefone(element.innerText);
+    });
+
+    document.querySelectorAll('.deleteForm').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const clientName = this.closest('.option-item').querySelector('h2').innerText.split(": ")[1];
+
+            const confirmation = confirm(`O Cliente ${clientName} será deletado, esta ação não pode ser desfeita. Deseja prosseguir?`);
+
+            if (confirmation) {
+                const formData = new FormData(this);
+
+                fetch('/Clientes/deletar', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'error') {
+                        alert(data.message);
+                    } else if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.href = '/Clientes/listaclientes';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Ação cancelada.');
+            }
+        });
+    });
+</script>

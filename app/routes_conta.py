@@ -1,19 +1,19 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from datetime import datetime
-from models import Conta, Cliente, db
+from .models import Conta, Cliente, db
 from sqlalchemy import and_, delete, select, update
 
 contas_bp = Blueprint("contas", __name__)
 
-@contas_bp.route("/contas")
+@contas_bp.route("/")
 def contas():
     return render_template("contas.html")  
 
-@contas_bp.route("/criarconta")
-def criar_conta():
+@contas_bp.route("/criar")
+def cria_conta():
     return render_template("criarconta.html")
 
-@contas_bp.route("/editaconta", methods=["POST"])
+@contas_bp.route("/editar", methods=["POST"])
 def edita_conta():
     id = request.form.get("id")
     
@@ -22,7 +22,7 @@ def edita_conta():
 
     return render_template("editaconta.html", conta=conta)  
 
-@contas_bp.route("/pagaconta", methods=["POST"])
+@contas_bp.route("/pagar", methods=["POST"])
 def paga_conta():
     id = request.form.get("id")
     
@@ -31,8 +31,8 @@ def paga_conta():
 
     return render_template("pagarconta.html", conta=conta)  
 
-@contas_bp.route("/criaconta", methods=["POST"])
-def cria_conta():
+@contas_bp.route("/criarconta", methods=["POST"])
+def criar_conta():
     cliente_cpf = request.form.get("cliente_cpf")
     valor = request.form.get("valor")
     juros = request.form.get("juros")
@@ -86,7 +86,7 @@ def listar_conta():
 
     return render_template("listacontas.html", contas=contas)
 
-@contas_bp.route("/pagarconta", methods=["POST"])
+@contas_bp.route("/pagaconta", methods=["POST"])
 def pagar_conta():
     id = request.form.get("id")
     data_pagamento = request.form.get("data_pagamento")
@@ -103,8 +103,8 @@ def pagar_conta():
 
     return jsonify({'status': 'success', 'message': 'Pagamento realizado com sucesso!', 'redirect_url': url_for('contas.listar_contas')}), 200
 
-@contas_bp.route("/atualizaconta", methods=["POST"])
-def atualizar_conta():
+@contas_bp.route("/editaconta", methods=["POST"])
+def editar_conta():
     id = request.form.get("id")
     cliente_cpf = request.form.get("cliente_cpf")
     valor = request.form.get("valor")
@@ -141,7 +141,7 @@ def atualizar_conta():
     
     return jsonify({'status': 'success', 'message': 'Conta atualizada com sucesso!', 'redirect_url': url_for('contas.listar_contas')}), 200
 
-@contas_bp.route("/deletaconta", methods=["POST"])
+@contas_bp.route("/deletar", methods=["POST"])
 def deletar_conta():
     id = request.form.get("id")
     

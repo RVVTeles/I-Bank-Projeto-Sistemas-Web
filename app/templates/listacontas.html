@@ -11,7 +11,7 @@
                 <option value="cpf">CPF</option>
             </select>
             <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Contas" onkeyup="filterList()" style="font-size: 14px; padding: 8px; width: 80%;">
-            <form action="/criarconta" method="GET" style="display: inline; margin-left: 10px;">
+            <form action="/Contas/criar" method="GET" style="display: inline; margin-left: 10px;">
                 <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Conta</button>
             </form>
         </div>  
@@ -42,15 +42,15 @@
                     <p style="font-size: 14px; margin: 5px 0;">Valor Pago: R${{ conta.valor + ((conta.data_pagamento - conta.data_vencimento).days * conta.juros) }}</p>
                     {% endif %}
                 {% endif%}
-                <form action="/editaconta" method="POST" style="display: inline;">
+                <form action="/Contas/editar" method="POST" style="display: inline;">
                     <input type="hidden" name="id" value="{{ conta.id }}">
-                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Atualizar</button>
+                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Editar</button>
                 </form>
                 <form class="deleteForm" method="POST" style="display: inline;">
                     <input type="hidden" name="id" value="{{ conta.id }}">
                     <button type="submit" class="w3-button w3-red" style="font-size: 14px; margin-left: 8px;">Deletar</button>
                 </form>
-                <form action="/pagaconta" method="POST" style="display: inline;">
+                <form action="/Contas/pagar" method="POST" style="display: inline;">
                     <input type="hidden" name="id" value="{{ conta.id }}">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px; float:right">Pagar</button>
                 </form>
@@ -128,7 +128,7 @@
             if (confirmation) {
                 const formData = new FormData(this);
 
-                fetch('/deletaconta', {
+                fetch('/Contas/deletar', {
                     method: 'POST',
                     body: formData
                 })

@@ -28,7 +28,7 @@
         <label for="estado">Estado:</label>
         <input type="text" id="estado" name="estado">        
         <div></div>
-        <input type="submit" value="Atualizar Cliente" style="margin-top: 20px; width: 45%; justify-self: end;">
+        <input type="submit" value="Editar Cliente" style="margin-top: 20px; width: 45%; justify-self: end;">
       </form>
     </div>
   </div>
@@ -59,7 +59,7 @@
 
       const formData = new FormData(this);
   
-      fetch('/atualizacliente', {
+      fetch('/Clientes/editacliente', {
           method: 'POST',
           body: formData
       })

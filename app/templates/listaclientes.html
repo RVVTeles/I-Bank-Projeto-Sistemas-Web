@@ -10,7 +10,7 @@
             <div style="display: flex; align-items: center;">                
                 <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome ou CPF" onkeyup="filterList()" style="font-size: 14px; padding: 8px; flex: 1;">      
                 
-                <form action="/criarcliente" method="GET" style="display: inline; margin-left: 10px;">
+                <form action="/Clientes/criar" method="GET" style="display: inline; margin-left: 10px;">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Cliente</button>
                 </form>
             </div>
@@ -28,7 +28,7 @@
                 <p style="font-size: 14px; margin: 5px 0;">Cidade: {{ cliente.cidade }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Estado: {{ cliente.estado }}</p>
 
-                <form action="/editacliente" method="POST" style="display: inline;">
+                <form action="/Clientes/editar" method="POST" style="display: inline;">
                     <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Editar</button>
                 </form>
@@ -94,7 +94,7 @@
             if (confirmation) {
                 const formData = new FormData(this);
 
-                fetch('/deletacliente', {
+                fetch('/Clientes/deletar', {
                     method: 'POST',
                     body: formData
                 })

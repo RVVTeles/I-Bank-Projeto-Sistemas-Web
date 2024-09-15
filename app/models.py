@@ -1,12 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 
-
 db = SQLAlchemy()
 
 class Cliente(db.Model):
     __tablename__ = "clientes"
-
-    cpf = db.Column(db.String(11) , primary_key=True)
+    cpf = db.Column(db.String(11), primary_key=True)
     nome = db.Column(db.String(255), nullable=False)
     numero_telefone = db.Column(db.String(20), nullable=False)
     endereco = db.Column(db.String(255), nullable=False)
@@ -25,7 +23,6 @@ class Cliente(db.Model):
 
 class Conta(db.Model):
     __tablename__ = "contas"
-
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     cliente_cpf = db.Column(db.String(11), db.ForeignKey("clientes.cpf"), nullable=False)
     valor = db.Column(db.Float, nullable=False)
