@@ -64,27 +64,6 @@ def listar_contas():
     stmt = select(Conta).order_by(Conta.data_emissao)
     contas = db.session.execute(stmt).scalars().all()
     return render_template("listacontas.html", contas=contas)
-    
-
-@contas_bp.route("/listaconta", methods=["GET"])
-def listar_conta():
-    cliente_cpf = request.args.get("cliente_cpf")
-
-    stmt = select(Cliente).where(Cliente.cpf == cliente_cpf)
-    cliente = db.session.execute(stmt).scalars().first()
-
-    if cliente is None:
-        flash("CPF não cadastrado")
-        return redirect(url_for("contas.contas"))
-    
-    stmt = select(Conta).where(Conta.cliente_cpf == cliente_cpf).order_by(Conta.data_emissao)
-    contas = db.session.execute(stmt).scalars().all()
-
-    if not contas:
-        flash(f"Nenhuma conta associada ao CPF {cliente_cpf}")
-        return redirect(url_for("contas.contas"))
-
-    return render_template("listacontas.html", contas=contas)
 
 @contas_bp.route("/pagaconta", methods=["POST"])
 def pagar_conta():
@@ -215,4 +194,20 @@ def listar_conta_status():
 def listar_credores():    
     stmt = select(Conta).where(Conta.data_pagamento == None).order_by(Conta.data_emissao)
     contas = db.session.execute(stmt).scalars().all()
-    return render_template("listacontas.html", contas=contas)
+    clientes = []
+    cliente_contas_nao_pagas = {}
+
+    cpfs = set()
+
+    for conta in contas:
+        if conta.cliente_cpf not in cpfs:
+            clientes_stmt = select(Cliente).where(Cliente.cpf == conta.cliente_cpf)
+            cliente = db.session.execute(clientes_stmt).scalars().first()
+
+            if cliente:
+                clientes.append(cliente)
+                cpfs.add(conta.cliente_cpf)
+                contador_contas_nao_pagas = sum(1 for c in contas if c.cliente_cpf == conta.cliente_cpf)
+                cliente_contas_nao_pagas[conta.cliente_cpf] = contador_contas_nao_pagas
+        
+    return render_template("listacredores.html", clientes=clientes, cliente_contas_nao_pagas=cliente_contas_nao_pagas)

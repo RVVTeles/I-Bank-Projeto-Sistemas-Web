@@ -1,42 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-
 {% include "header.html" %}
 
-<div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
+<div class="w3-main" style="margin-left:250px; padding-top: 50px; display: flex; justify-content: center;">
 
     <div style="width: 50%;">
 
-        <h1 class="w3-container">Cliente</h1>
+        <h1 class="w3-container">Clientes</h1>
+
+        <div class="w3-container">
+            <div style="display: flex; align-items: center;">                
+                <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Cliente por Nome ou CPF" onkeyup="filterList()" style="font-size: 14px; padding: 8px; flex: 1;">      
+                
+                <form action="/Clientes/criar" method="GET" style="display: inline; margin-left: 10px;">
+                    <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Cliente</button>
+                </form>
+            </div>
+        </div>
+
         
         <div class="w3-container w3-margin-top" id="optionsContainer">
+            {% for cliente in clientes %}
             <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
-                <h3 style="font-size: 14px; margin: 5px 0;">CPF: <span class="cpf">{{ cliente.cpf }}</span></h3>
-                <h2 style="font-size: 18px; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>                
+                <h3 style="font-size: 18px; margin: 5px 0;">CPF: <span class="cpf">{{ cliente.cpf }}</span></h3>
+                <h2 style="font-size: 18px; margin: 5px 0; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>                
                 <p style="font-size: 14px; margin: 5px 0;">Número de Telefone: <span class="telefone">{{ cliente.numero_telefone }}</span></p>
                 <p style="font-size: 14px; margin: 5px 0;">Endereço: {{ cliente.endereco }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Número: {{ cliente.numero_endereco }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Cidade: {{ cliente.cidade }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">Estado: {{ cliente.estado }}</p>
-    
+                <p style="font-size: 14px; margin: 5px 0;">Contas não pagas: {{ cliente_contas_nao_pagas[cliente.cpf] }}</p>
+
                 <form action="/Clientes/editar" method="POST" style="display: inline;">
                     <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Editar</button>
                 </form>
-    
+
                 <form class="deleteForm" method="POST" style="display: inline;">
                     <input type="hidden" name="cpf" value="{{ cliente.cpf }}">
                     <button type="submit" class="w3-button w3-red" style="font-size: 14px; margin-left: 8px;">Deletar</button>
                 </form>
-    
+
             </div>
+            {% endfor %}
         </div>
 
     </div>
 
 </div>
+
 {% include "footer.html" %}
+
 <script>
+
     function formatCPF(cpf) {
             return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1$2$3-$4");
         }
@@ -52,6 +66,23 @@
     document.querySelectorAll('.telefone').forEach(function(element) {
         element.innerText = formatNumeroTelefone(element.innerText);
     });
+
+    function filterList() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const optionItems = document.getElementsByClassName('option-item');
+        
+        for (let i = 0; i < optionItems.length; i++) {
+            const item = optionItems[i];
+            const nome = item.getElementsByTagName('h2')[0].innerText.toLowerCase();
+            const cpf = item.getElementsByTagName('h3')[0].innerText.toLowerCase();
+            
+            if (nome.includes(input) || cpf.includes(input) ) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        }
+    }
 
     document.querySelectorAll('.deleteForm').forEach(form => {
         form.addEventListener('submit', function(e) {
@@ -74,7 +105,7 @@
                         alert(data.message);
                     } else if (data.status === 'success') {
                         alert(data.message);
-                        window.location.href = '/Clientes/listaclientes';
+                        window.location.reload();
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -83,4 +114,4 @@
             }
         });
     });
-</script>
+  </script>

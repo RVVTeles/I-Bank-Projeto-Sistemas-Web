@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from .models import db
-from .routes_cliente import clientes_bp
-from .routes_conta import contas_bp
+from .clientes_controller import clientes_bp
+from .contas_controller import contas_bp
 from .config import Config
 
 def create_app():
