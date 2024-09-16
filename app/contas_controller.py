@@ -5,10 +5,6 @@ from sqlalchemy import and_, delete, select, update
 
 contas_bp = Blueprint("contas", __name__)
 
-@contas_bp.route("/")
-def contas():
-    return render_template("contas.html")  
-
 @contas_bp.route("/criar")
 def cria_conta():
     return render_template("criarconta.html")
@@ -132,63 +128,6 @@ def deletar_conta():
     db.session.commit()
     return jsonify({'status': 'success', 'message': 'Conta deletada com sucesso!'}), 200
 
-@contas_bp.route("/contasapagar", methods=["POST"])
-def contas_a_pagar():
-    data_inicial = request.form.get("data_inicial")
-    data_final = request.form.get("data_final")
-
-    if not data_inicial or not data_final:
-        flash("É necessário inserir a data inicial e a data final da pesquisa.")
-        return redirect(url_for("contas.contas"))
-    
-    stmt = select(Conta).where(and_(Conta.data_vencimento >= data_inicial, Conta.data_vencimento <= data_final, Conta.data_pagamento == None)).order_by(Conta.data_emissao)
-    contas = db.session.execute(stmt).scalars().all()
-
-    return render_template("listacontas.html", contas=contas)
-
-@contas_bp.route("/contaspagas", methods=["POST"])
-def contas_pagas():
-    data_inicial = request.form.get("data_inicial")
-    data_final = request.form.get("data_final")
-
-    if not data_inicial or not data_final:
-        flash("É necessário inserir a data inicial e a data final da pesquisa.")
-        return redirect(url_for("contas.contas"))
-    
-    stmt = select(Conta).where(and_(Conta.data_vencimento >= data_inicial, Conta.data_vencimento <= data_final, Conta.data_pagamento != None)).order_by(Conta.data_emissao)
-    contas = db.session.execute(stmt).scalars().all()
-
-    return render_template("listacontas.html", contas=contas)
-
-@contas_bp.route("/listacontascliente", methods=["GET"])
-def listar_contas_cliente():    
-    stmt = select(Conta).order_by(Conta.data_emissao)
-    contas = db.session.execute(stmt).scalars().all()
-    return render_template("listacontas.html", contas=contas)
-
-@contas_bp.route("/listacontastatus", methods=["GET"])
-def listar_conta_status():
-    cliente_cpf = request.args.get("cliente_cpf")
-    status = request.args.get("status")
-
-    stmt = select(Cliente).where(Cliente.cpf == cliente_cpf)
-    cliente = db.session.execute(stmt).scalars().first()
-    data_atual = datetime.now().date()
-
-    if cliente is None:
-        flash("CPF não cadastrado")
-        return redirect(url_for("contas.contas"))
-    
-    if status == "em atraso":
-        stmt = select(Conta).where(Conta.cliente_cpf == cliente_cpf, Conta.data_pagamento == None, Conta.data_vencimento < data_atual).order_by(Conta.data_emissao)
-    elif status == "paga":
-        stmt = select(Conta).where(Conta.cliente_cpf == cliente_cpf, Conta.data_pagamento != None).order_by(Conta.data_emissao)
-    else:
-        stmt = select(Conta).where(Conta.cliente_cpf == cliente_cpf, Conta.data_pagamento == None, Conta.data_vencimento > data_atual).order_by(Conta.data_emissao)
-
-    contas = db.session.execute(stmt).scalars().all()
-
-    return render_template("listacontas.html", contas=contas)
 
 @contas_bp.route("/listacredores", methods=["GET"])
 def listar_credores():    

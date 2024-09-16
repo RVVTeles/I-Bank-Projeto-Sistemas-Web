@@ -4,10 +4,6 @@ from .models import Cliente, Conta, db
 
 clientes_bp = Blueprint("clientes", __name__)
 
-@clientes_bp.route("/")
-def clientes():
-    return render_template("cliente.html")
-
 @clientes_bp.route("/criar")
 def criar_cliente_page():
     return render_template("criarcliente.html")
@@ -28,16 +24,6 @@ def listar_clientes():
     stmt = select(Cliente).order_by(Cliente.cpf)
     clientes = db.session.execute(stmt).scalars().all()
     return render_template("listaclientes.html", clientes=clientes)
-
-@clientes_bp.route("/listacliente", methods=["POST"])
-def listar_cliente():
-    cpf = request.form.get("cpf")
-    stmt = select(Cliente).where(Cliente.cpf == cpf)
-    cliente = db.session.execute(stmt).scalars().first()
-    if cliente is None:
-        return jsonify({'status': 'error', 'message': 'CPF não cadastrado'}), 400
-
-    return render_template("listacliente.html", cliente=cliente)
 
 
 @clientes_bp.route("/criacliente", methods=["POST"])

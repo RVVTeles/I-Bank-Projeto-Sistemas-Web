@@ -40,7 +40,7 @@
   document.addEventListener('DOMContentLoaded', function() {
       var cpfInput = document.getElementById('cpf');
       var cpfHiddenInput = document.getElementById('cpf_hidden');
-      var cpfValue = cpfHiddenInput.value.replace(/\D/g, ''); // Remove non-numeric characters
+      var cpfValue = cpfHiddenInput.value.replace(/\D/g, '');
 
       if (cpfValue.length === 11) {
           cpfInput.value = cpfValue.slice(0, 9) + '-' + cpfValue.slice(9, 11);

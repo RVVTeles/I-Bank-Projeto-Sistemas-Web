@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 09, 2024 at 09:57 PM
+-- Generation Time: Sep 16, 2024 at 10:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -71,7 +71,11 @@ INSERT INTO `contas` (`id`, `cliente_cpf`, `valor`, `juros`, `data_emissao`, `da
 (1, '12345678900', 5000, 10, '2024-09-09', '2024-09-10', NULL),
 (2, '12345678900', 1500, 10, '2024-09-02', '2024-09-11', NULL),
 (3, '12345678900', 2000, 30, '2024-09-02', '2024-09-03', NULL),
-(4, '12345678900', 750, 10, '2024-09-02', '2024-09-04', '2024-09-06');
+(4, '12345678900', 750, 10, '2024-09-02', '2024-09-04', '2024-09-06'),
+(5, '45678901233', 8500, 100, '2024-09-12', '2024-09-13', NULL),
+(6, '34567890122', 500, 10, '2024-09-12', '2024-09-20', NULL),
+(8, '23456789011', 850, 10, '2024-09-12', '2024-09-13', '2024-09-13'),
+(9, '12345678900', 8000, 100, '2024-09-14', '2024-09-14', NULL);
 
 --
 -- Indexes for dumped tables
@@ -98,7 +102,7 @@ ALTER TABLE `contas`
 -- AUTO_INCREMENT for table `contas`
 --
 ALTER TABLE `contas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables

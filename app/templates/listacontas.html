@@ -1,20 +1,45 @@
 {% include "header.html" %}
 <div class="w3-main" style="margin-left:0px; padding-top: 50px; display: flex; justify-content: center;">
-
     <div style="width: 50%;">
-
         <h1 class="w3-container">Contas</h1>
 
         <div class="w3-container" style="display: flex;">
             <select id="searchType" class="w3-select w3-border w3-round" style="width: 10%; margin-right: 10px;">
-                <option value="id" selected>ID</option>
-                <option value="cpf">CPF</option>
+                <option value="cpf" selected>CPF</option>
+                <option value="id">ID</option>
             </select>
             <input type="text" id="searchInput" class="w3-input w3-border w3-round" placeholder="Pesquisar Contas" onkeyup="filterList()" style="font-size: 14px; padding: 8px; width: 80%;">
             <form action="/Contas/criar" method="GET" style="display: inline; margin-left: 10px;">
                 <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Conta</button>
             </form>
-        </div>  
+        </div>
+
+        <div class="w3-container w3-padding w3-margin-top" style="background-color: #f0f0f0;">
+            <h3>Filtros</h3>
+            <div style="margin-bottom: 10px;">
+                <button class="w3-button w3-theme" onclick="filterByStatus('all')">Todas</button>
+                <button class="w3-button w3-theme" onclick="filterByStatus('paga')">Pagas</button>
+                <button class="w3-button w3-theme" onclick="filterByStatus('em atraso')">Em Atraso</button>
+                <button class="w3-button w3-theme" onclick="filterByStatus('a pagar')">A Pagar</button>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="dateFilterType">Filtrar por:</label>
+                <select id="dateFilterType" class="w3-select w3-border w3-round" style="width: 30%;">
+                    <option value="vencimento">Data de Vencimento</option>
+                    <option value="pagamento">Data de Pagamento</option>
+                    <option value="emissao">Data de Emissão</option>
+                </select>
+            </div>
+        
+            <div style="margin-bottom: 10px;">
+                <label for="startDate">Data de Início:</label>
+                <input type="date" id="startDate" class="w3-input w3-border w3-round" style="width: 30%;" onchange="filterByDate()">
+            </div>
+            <div>
+                <label for="endDate">Data Final:</label>
+                <input type="date" id="endDate" class="w3-input w3-border w3-round" style="width: 30%;" onchange="filterByDate()">
+            </div>
+        </div>
 
         <div class="w3-container w3-margin-top" id="optionsContainer">
             {% if not contas %}
@@ -24,10 +49,11 @@
             {% endif %}
             {% for conta in contas %}
             <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;" 
-            data-id="{{ conta.id }}" 
-            data-cpf="{{ conta.cliente_cpf }}"
-            data-vencimento="{{ conta.data_vencimento }}" 
-            data-pagamento="{{ conta.data_pagamento if conta.data_pagamento else '' }}">
+                 data-id="{{ conta.id }}" 
+                 data-cpf="{{ conta.cliente_cpf }}"
+                 data-vencimento="{{ conta.data_vencimento }}" 
+                 data-emissao="{{ conta.data_emissao }}"
+                 data-pagamento="{{ conta.data_pagamento if conta.data_pagamento else '' }}">
                 <h3 style="font-size: 18px; margin-bottom: 10px;">ID da Conta: {{ conta.id }}</h3>
                 <p style="font-size: 18px; margin-bottom: 10px;">CPF do Cliente: <span class="cpf">{{ conta.cliente_cpf }}</span></p>
                 <p style="font-size: 14px; margin: 5px 0;">Valor: R${{ conta.valor }}</p>
@@ -41,7 +67,7 @@
                     {% if conta.data_pagamento > conta.data_vencimento %}
                     <p style="font-size: 14px; margin: 5px 0;">Valor Pago: R${{ conta.valor + ((conta.data_pagamento - conta.data_vencimento).days * conta.juros) }}</p>
                     {% endif %}
-                {% endif%}
+                {% endif %}
                 <form action="/Contas/editar" method="POST" style="display: inline;">
                     <input type="hidden" name="id" value="{{ conta.id }}">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Editar</button>
@@ -57,75 +83,126 @@
             </div>
             {% endfor %}
         </div>
-
     </div>
-
 </div>
 
 {% include "footer.html" %}
 
-    <script>
+<script>
+    function formatCPF(cpf) {
+        return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1$2$3-$4");
+    }
+    document.querySelectorAll('.cpf').forEach(function(element) {
+        element.innerText = formatCPF(element.innerText);
+    });
 
-        function formatCPF(cpf) {
-            return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1$2$3-$4");
-        }
-        document.querySelectorAll('.cpf').forEach(function(element) {
-            element.innerText = formatCPF(element.innerText);
-        });
+    function filterList(status = 'all') {
+        const searchType = document.getElementById('searchType').value;
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const optionItems = document.getElementsByClassName('option-item');
 
-        function filterList() {
-            const searchType = document.getElementById('searchType').value;
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const optionItems = document.getElementsByClassName('option-item');
+        for (let i = 0; i < optionItems.length; i++) {
+            const item = optionItems[i];
+            let text;
             
-            for (let i = 0; i < optionItems.length; i++) {
-                const item = optionItems[i];
-                let text;
-                
-                if (searchType === 'id') {
-                    text = item.getAttribute('data-id').toLowerCase();
-                } else if (searchType === 'cpf') {
-                    text = item.getAttribute('data-cpf').toLowerCase();
-                }
+            if (searchType === 'id') {
+                text = item.getAttribute('data-id').toLowerCase();
+            } else if (searchType === 'cpf') {
+                text = item.getAttribute('data-cpf').toLowerCase();
+            }
 
-                if (text.startsWith(input)) {
-                    item.style.display = "block";
-                } else {
-                    item.style.display = "none";
-                }
+            const itemStatus = item.getAttribute('data-status');
+            const matchesSearch = text.startsWith(input);
+            const matchesStatus = status === 'all' || itemStatus === status;
+
+            if (matchesSearch && matchesStatus && matchesDate(item)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
             }
         }
-    </script>
+    }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-    
-            const contaItems = document.querySelectorAll('.option-item');
-            contaItems.forEach(function(item) {
-                const vencimentoStr = item.getAttribute('data-vencimento');
-                const pagamentoStr = item.getAttribute('data-pagamento');
-                
-                const vencimento = new Date(vencimentoStr);
-                vencimento.setHours(0, 0, 0, 0);
+    function filterByStatus(status) {
+        filterList(status);
+    }
 
-                const pagamento = pagamentoStr ? new Date(pagamentoStr) : null;
-    
-                const statusElement = item.querySelector('p[id^="status_"]');
 
-                if (pagamento) {
-                    statusElement.textContent = "Status da Conta: paga";
-                } else if (today < vencimento) {
-                    statusElement.textContent = "Status da Conta: em atraso";
-                } else {
-                    statusElement.textContent = "Status da Conta: a pagar";
-                }
-            });
+    function filterByDate() {
+        const filterType = document.getElementById('dateFilterType').value;
+        const startDate = new Date(document.getElementById('startDate').value);
+        const endDate = new Date(document.getElementById('endDate').value);
+        const optionItems = document.querySelectorAll('.option-item');
+
+        optionItems.forEach(item => {
+            const dateStr = item.getAttribute(`data-${filterType}`);
+            if (!dateStr) {
+                item.style.display = "none";
+                return;
+            }
+
+            const date = new Date(dateStr);
+            if ((isNaN(startDate) || date >= startDate) && (isNaN(endDate) || date <= endDate)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
         });
-    </script>
-    <script>
-        document.querySelectorAll('.deleteForm').forEach(form => {
+    }
+
+    function matchesDate(item) {
+        const filterType = document.getElementById('dateFilterType').value;
+        const startDate = new Date(document.getElementById('startDate').value);
+        const endDate = new Date(document.getElementById('endDate').value);
+        const dateStr = item.getAttribute(`data-${filterType}`);
+        
+        if (!dateStr) {
+            return false;
+        }
+
+        const date = new Date(dateStr);
+        return (isNaN(startDate) || date >= startDate) && (isNaN(endDate) || date <= endDate);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const contaItems = document.querySelectorAll('.option-item');
+        contaItems.forEach(function(item) {
+            const vencimentoStr = item.getAttribute('data-vencimento');
+            const pagamentoStr = item.getAttribute('data-pagamento');
+            
+            const vencimento = new Date(vencimentoStr);
+            vencimento.setHours(0, 0, 0, 0);
+
+            const pagamento = pagamentoStr ? new Date(pagamentoStr) : null;
+
+            const statusElement = item.querySelector('p[id^="status_"]');
+
+            let status = '';
+            if (pagamento) {
+                status = 'paga';
+                statusElement.textContent = "Status da Conta: paga";
+            } else if (today < vencimento) {
+                status = 'a pagar';
+                statusElement.textContent = "Status da Conta: a pagar";
+            } else {
+                status = 'em atraso';
+                statusElement.textContent = "Status da Conta: em atraso";
+            }
+
+            item.setAttribute('data-status', status);
+        });
+
+        filterList();
+    });
+    
+
+
+</script>
+<script>
+    document.querySelectorAll('.deleteForm').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -155,4 +232,4 @@
             }
         });
     });
-    </script>
+</script>
