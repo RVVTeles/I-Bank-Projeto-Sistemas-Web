@@ -13,13 +13,24 @@
                 <form action="/Clientes/criar" method="GET" style="display: inline; margin-left: 10px;">
                     <button type="submit" class="w3-button w3-theme" style="font-size: 14px;">Criar Cliente</button>
                 </form>
+                <form id="imprimirForm" action="/Clientes/imprimir_clientes" method="POST" style="display: inline; margin-left: 10px;">
+                    <button type="button" onclick="sendClientes()" class="w3-button w3-theme" style="font-size: 14px;">Imprimir Clientes</button>
+                </form>
             </div>
         </div>
 
         
         <div class="w3-container w3-margin-top" id="optionsContainer">
             {% for cliente in clientes %}
-            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;">
+            <div class="w3-card-4 w3-margin w3-padding w3-light-grey option-item" style="padding: 16px;"
+            cpf="{{ cliente.cpf }}"
+            nome="{{ cliente.nome }}"
+            numero-telefone="{{ cliente.numero_telefone }}"
+            endereco="{{ cliente.endereco }}"
+            numero-endereco="{{ cliente.numero_endereco }}"
+            cidade="{{ cliente.cidade }}"
+            estado="{{ cliente.estado }}"
+            >
                 <h3 style="font-size: 18px; margin: 5px 0;">CPF: <span class="cpf">{{ cliente.cpf }}</span></h3>
                 <h2 style="font-size: 18px; margin: 5px 0; margin-bottom: 10px;">Nome: {{ cliente.nome }}</h2>                
                 <p style="font-size: 14px; margin: 5px 0;">Número de Telefone: <span class="telefone">{{ cliente.numero_telefone }}</span></p>
@@ -82,6 +93,60 @@
             }
         }
     }
+
+    function sendClientes() {
+        const clientesList = [];
+        
+        document.querySelectorAll('.option-item').forEach(item => {
+            if (item.style.display !== 'none') {
+                const cliente = {
+                    cpf: item.getAttribute('cpf'),
+                    nome: item.getAttribute('nome'),
+                    numero_telefone: item.getAttribute('numero-telefone'),
+                    endereco: item.getAttribute('endereco'),
+                    numero_endereco: item.getAttribute('numero-endereco'),
+                    cidade: item.getAttribute('cidade'),
+                    estado: item.getAttribute('estado')
+                };
+                clientesList.push(cliente);
+            }
+        });
+
+        if (clientesList.length > 0) {
+            fetch('/Clientes/imprimir_clientes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ clientes: clientesList }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    throw new Error('Failed to generate PDF');
+                }
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'clientes.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert('PDF gerado com sucesso!');
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao gerar o PDF.');
+            });
+        } else {
+            alert('Nenhum cliente disponível para enviar.');
+        }
+    }
+
 
     document.querySelectorAll('.deleteForm').forEach(form => {
         form.addEventListener('submit', function(e) {

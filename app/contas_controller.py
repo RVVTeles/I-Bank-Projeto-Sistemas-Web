@@ -1,7 +1,9 @@
-from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
-from datetime import datetime
 from .models import Conta, Cliente, db
-from sqlalchemy import and_, delete, select, update
+from flask import Blueprint, jsonify, render_template, request, url_for, make_response
+from io import BytesIO
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.pdfgen import canvas
+from sqlalchemy import delete, select, update
 
 contas_bp = Blueprint("contas", __name__)
 
@@ -150,3 +152,83 @@ def listar_credores():
                 cliente_contas_nao_pagas[conta.cliente_cpf] = contador_contas_nao_pagas
         
     return render_template("listacredores.html", clientes=clientes, cliente_contas_nao_pagas=cliente_contas_nao_pagas)
+
+@contas_bp.route('/imprimir_contas', methods=['POST'])
+def imprimir_contas():
+    contas = request.json.get('contas', [])
+    
+    if not contas:
+        return {'status': 'error', 'message': 'Nenhuma conta disponível.'}, 400
+    
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=landscape(letter))
+    width, height = landscape(letter)
+    
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(200, height - 50, "Relatório de Contas")
+    
+    headers = ['ID', 'CPF', 'Valor', 'Juros','Data de Vencimento', 'Data de Emissão', 'Data de Pagamento', 'Valor Pago']
+    
+    pdf.setFont("Helvetica-Bold", 12)
+    col_widths = []
+    
+    for header in headers:
+        col_widths.append(pdf.stringWidth(header, "Helvetica-Bold", 12))
+    
+    pdf.setFont("Helvetica", 10)
+    for conta in contas:
+        col_widths[0] = max(col_widths[0], pdf.stringWidth(conta['id'], "Helvetica", 10))
+        col_widths[1] = max(col_widths[1], pdf.stringWidth(conta['cpf'], "Helvetica", 10))
+        col_widths[2] = max(col_widths[2], pdf.stringWidth(conta['valor'], "Helvetica", 10))
+        col_widths[3] = max(col_widths[3], pdf.stringWidth(conta['juros'], "Helvetica", 10))
+        col_widths[4] = max(col_widths[4], pdf.stringWidth(conta['vencimento'], "Helvetica", 10))
+        col_widths[5] = max(col_widths[5], pdf.stringWidth(conta['emissao'], "Helvetica", 10))
+        col_widths[6] = max(col_widths[6], pdf.stringWidth(conta['pagamento'] if conta['pagamento'] else '-', "Helvetica", 10))
+        col_widths[7] = max(col_widths[7], pdf.stringWidth(conta['valorPago'] if conta['valorPago'] else '-', "Helvetica", 10))
+
+    col_widths = [w + 20 for w in col_widths]
+
+    x_offset = 50
+    y_offset = height - 100
+    row_height = 20
+
+    pdf.setFont("Helvetica-Bold", 12)
+    for i, header in enumerate(headers):
+        pdf.drawString(x_offset, y_offset, header)
+        x_offset += col_widths[i]
+    
+    pdf.setFont("Helvetica", 10)
+    y_offset -= row_height
+    for conta in contas:
+        x_offset = 50
+        pdf.drawString(x_offset, y_offset, conta['id'])
+        x_offset += col_widths[0]
+        pdf.drawString(x_offset, y_offset, conta['cpf'])
+        x_offset += col_widths[1]
+        pdf.drawString(x_offset, y_offset, conta['valor'])
+        x_offset += col_widths[2]
+        pdf.drawString(x_offset, y_offset, conta['juros'])
+        x_offset += col_widths[3]
+        pdf.drawString(x_offset, y_offset, conta['vencimento'])
+        x_offset += col_widths[4]
+        pdf.drawString(x_offset, y_offset, conta['emissao'])
+        x_offset += col_widths[5]
+        pdf.drawString(x_offset, y_offset, conta['pagamento'] if conta['pagamento'] else '-')
+        x_offset += col_widths[6]
+        pdf.drawString(x_offset, y_offset, conta['valorPago'] if conta['valorPago'] else '-')        
+        y_offset -= row_height
+
+        if y_offset < 50:
+            pdf.showPage()
+            y_offset = height - 100
+    
+    pdf.save()
+    
+    pdf_output = buffer.getvalue()
+    buffer.close()
+    
+    response = make_response(pdf_output)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=contas.pdf'
+    
+    return response

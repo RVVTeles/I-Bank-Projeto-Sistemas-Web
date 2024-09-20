@@ -1,5 +1,6 @@
 mysqlclient
 SQLAlchemy
 psycopg2-binary
-flask-sqlalchemy
 Flask
+flask-sqlalchemy
+reportlab

@@ -2,6 +2,9 @@
 html, body, h1, h2, h3, h4, h5, h6 {
     font-family: "Roboto", sans-serif;
 }
+a{
+    font-family: "Merriweather", sans-serif;
+}
 
 body.home {
     background-image: url('/static/Bank Trifold Brochure.png');
